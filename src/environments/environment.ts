@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: 'vein360.azurewebsites.net',
+  apiUrl: 'https://vein360-api-cnekdzfzcubngeb2.eastus2-01.azurewebsites.net',
 };
