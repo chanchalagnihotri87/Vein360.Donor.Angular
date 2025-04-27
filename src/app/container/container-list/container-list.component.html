@@ -1,0 +1,72 @@
+<div class="table-responsive">
+  <table class="table table-borderless text-nowrap" id="donation-table">
+    <thead>
+      <tr>
+        <th>#Id</th>
+        <th>Container Type</th>
+        <th>Container Code</th>
+        <th>Tracking Number</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(container of containers; track container.id){
+      <tr>
+        <td>
+          <span class="table-list-code"> {{ container.id }} </span>
+        </td>
+        <td>{{ container.containerType!.name }}</td>
+        <td>{{ container.container?.containerCode }}</td>
+        <td>{{ container.trackingNumber }}</td>
+        <td>
+          @switch (container.status) { @case (ContainerStatus.Requested) {
+          <span class="badge badge-primary">Requested</span>
+          } @case (ContainerStatus.Approved) {
+          <span class="badge badge-info">Approved</span>
+          } @case (ContainerStatus.Rejected) {
+          <span class="badge badge-danger">Approved</span>
+          } @case (ContainerStatus.Dispatched) {
+          <span class="badge badge-info">Dispatched</span>
+          } @case (ContainerStatus.Received) {
+          <span class="badge badge-success">Received</span>
+          } @case (ContainerStatus.Filled) {
+          <span class="badge badge-info">Filled</span>
+          } @case (ContainerStatus.Donated) {
+          <span class="badge badge-info">Donated</span>
+          } }
+        </td>
+        <td>
+          {{ container.createdDate | date : "mediumDate" }}
+        </td>
+        <td>
+          @if(container.status==ContainerStatus.Dispatched){
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            data-toggle="tooltip"
+            data-placement="top"
+            tooltip="Receive"
+            type="button"
+            (click)="handleReceivedContainer(container.id)"
+          >
+            <i class="fa fa-truck fa-lg"></i>
+          </button>
+          } @if(container.status==ContainerStatus.Requested){
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            data-toggle="tooltip"
+            data-placement="top"
+            tooltip="Delete"
+            type="button"
+            (click)="handleDeleteContainer(container.id)"
+          >
+            <i class="fa fa-trash fa-lg"></i>
+          </button>
+          }
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

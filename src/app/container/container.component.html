@@ -1,0 +1,20 @@
+<div class="user-card">
+  <div class="user-card-header">
+    <h4 class="user-card-title">My Containers</h4>
+    <button
+      class="btn btn-success theme-button float-end"
+      type="button"
+      (click)="showRequestContainerModal()"
+    >
+      Request for a Container
+    </button>
+  </div>
+  <div class="user-card-body">
+    <app-container-list
+      [containers]="containers"
+      (onDelete)="handleDeleteContainer($event)"
+      (onReceive)="handleReceiveContainer($event)"
+    >
+    </app-container-list>
+  </div>
+</div>

@@ -1,0 +1,127 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="donationModalLabel">Donation Detail</h5>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="modal"
+    aria-label="Close"
+    (click)="closeModal()"
+  ></button>
+</div>
+
+<div class="modal-body">
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label for="container-type" class="form-label">Container Type</label>
+      <select
+        class="form-select"
+        id="containerType"
+        name="containerType"
+        formControlName="containerType"
+        disabled
+        [value]="donation?.containerType"
+      >
+        <option value="">Select Container Type</option>
+        <option value="1">Vein360 Container</option>
+        <option value="2">Fedex Container</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label for="container" class="form-label">Container</label>
+      <select
+        class="form-select"
+        id="container"
+        formControlName="container"
+        [value]="donation?.containerId"
+        disabled
+      >
+        <option value="">Select Container</option>
+        @for(container of containers; track container.id){
+        <option
+          [value]="container.id"
+          [selected]="container.id == donation!.containerId"
+        >
+          #{{ container.id }} {{ container.containerType.name }}
+        </option>
+        }
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <label for="weight" class="form-label">Weight (in pounds)</label>
+      <input
+        type="number"
+        class="form-control"
+        id="weight"
+        placeholder="Enter weight"
+        formControlName="weight"
+        disabled
+        [value]="donation?.weight"
+      />
+    </div>
+
+    <div class="col-md-2">
+      <label for="weight" class="form-label">Tracking No.</label>
+      <input
+        type="number"
+        class="form-control"
+        id="trackingNumber"
+        formControlName="trackingNumber"
+        disabled
+        [value]="donation?.trackingNumber"
+      />
+    </div>
+  </div>
+  <div class="row pb-2 mt-5 mb-3 border-bottom">
+    <div class="col-md-12">
+      <span class="fw-bold">Products</span>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label>Product</label>
+    </div>
+    <div class="col-md-2">
+      <label>Units</label>
+    </div>
+  </div>
+
+  <ng-container>
+    @for(donationProduct of donation?.products; track $index){
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <select
+          class="form-select"
+          [value]="donationProduct.productId"
+          disabled
+        >
+          <option value="">Select Product</option>
+          @for(product of products; track product.id){
+          <option
+            [value]="product.id"
+            [selected]="product.id == donationProduct.productId"
+          >
+            {{ product.name }}
+          </option>
+          }
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input
+          type="number"
+          placeholder="Enter units"
+          class="form-control"
+          formControlName="units"
+          [value]="donationProduct.units"
+          disabled
+        />
+      </div>
+    </div>
+    }
+  </ng-container>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-light" (click)="closeModal()">
+    Close
+  </button>
+</div>

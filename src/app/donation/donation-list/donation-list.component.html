@@ -1,0 +1,86 @@
+<div class="table-responsive">
+  <table class="table table-borderless text-nowrap" id="donation-table">
+    <thead>
+      <tr>
+        <th>#Id</th>
+        <th>Products</th>
+        <th>Tracking Number</th>
+        <th>Label</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(donation of donations(); track donation.id) {
+      <tr>
+        <td>
+          <span class="table-list-code">{{ donation.id }}</span>
+        </td>
+        <td>{{ donation.productTypes.join(", ") }}</td>
+        <td>{{ donation.trackingNumber }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn-link-download btn-link"
+            target="_blank"
+            (click)="downloadLabel(donation.labelFileName)"
+          >
+            <i class="fa fa-download"></i>
+          </button>
+        </td>
+        <td>
+          @switch(donation.status) { @case (DonationStatus.Pending) {
+          <span class="badge badge-primary">Pending</span>
+          } @case (DonationStatus.Dispatched) {
+          <span class="badge badge-info">Dispatched</span>
+          } @case (DonationStatus.Received) {
+          <span class="badge badge-danger">Received</span>
+          } @case (DonationStatus.Verified) {
+          <span class="badge badge-success">Verified</span>
+          } @case (DonationStatus.Paid) {
+          <span class="badge badge-info">Paid</span>
+          } @default {
+          <span class="badge badge-primary">Pending</span>
+          } }
+        </td>
+        <td>
+          {{ donation.createdDate | date : "mediumDate" }}
+        </td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm me-2"
+            tooltip="Detail"
+            (click)="showDetail(donation.id)"
+          >
+            <i class="fa fa-eye fa-lg"></i>
+          </button>
+
+          @if(donation.status == DonationStatus.Pending) {
+          <button
+            class="btn btn-outline-secondary btn-sm me-2"
+            data-toggle="tooltip"
+            data-placement="top"
+            tooltip="Dispatch"
+            (click)="dispatchDonation(donation.id)"
+          >
+            <i class="fa fa-truck fa-lg"></i>
+          </button>
+
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            data-toggle="tooltip"
+            data-placement="top"
+            tooltip="Delete"
+            (click)="deleteDonation(donation.id)"
+          >
+            <i class="fa fa-trash fa-lg"></i>
+          </button>
+          }
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

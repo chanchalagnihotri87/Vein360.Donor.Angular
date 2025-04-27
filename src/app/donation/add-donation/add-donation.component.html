@@ -1,0 +1,154 @@
+<form [formGroup]="donationForm" (ngSubmit)="submitForm()" #form="ngForm">
+  <div class="modal-header">
+    <h5 class="modal-title" id="donationModalLabel">Add Donation</h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      (click)="closeModal()"
+    ></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label for="container-type" class="form-label">Container Type</label>
+        <select
+          class="form-select"
+          id="containerType"
+          name="containerType"
+          formControlName="containerType"
+          [(ngModel)]="selectedContainerType"
+        >
+          <option value="">Select Container Type</option>
+          <option [value]="ContainerType.Vein360Container">
+            Vein360 Container
+          </option>
+          <option [value]="ContainerType.FedexContainer">
+            Fedex Container
+          </option>
+        </select>
+
+        <app-validation-message
+          fieldName="containerType"
+          [formGroup]="donationForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
+      </div>
+      <div class="col-md-4">
+        <label for="container" class="form-label">Container</label>
+        <select class="form-select" id="container" formControlName="container">
+          <option value="">Select Container</option>
+          @for(container of associatedContainers; track container.id){
+          <option [value]="container.id">
+            {{ container.name }}
+          </option>
+          }
+        </select>
+        <app-validation-message
+          fieldName="container"
+          [formGroup]="donationForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
+      </div>
+
+      <div class="col-md-2">
+        <label for="weight" class="form-label">Weight (in pounds)</label>
+        <input
+          type="number"
+          class="form-control"
+          id="weight"
+          placeholder="Enter weight"
+          formControlName="weight"
+        />
+        <app-validation-message
+          fieldName="weight"
+          [formGroup]="donationForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
+      </div>
+    </div>
+    <div class="row pb-2 mt-5 mb-3 border-bottom">
+      <div class="col-md-12">
+        <span class="fw-bold">Products</span>
+        <button
+          class="btn btn-success btn-sm float-end"
+          type="button"
+          (click)="addProduct()"
+        >
+          Add Product
+        </button>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label>Product</label>
+      </div>
+      <div class="col-md-2">
+        <label>Units</label>
+      </div>
+    </div>
+
+    <ng-container formArrayName="products">
+      @for(productControl of productControls.controls; track $index; let
+      index=$index){
+      <div class="row mb-3" [formGroupName]="index">
+        <div class="col-md-6">
+          <select class="form-select" formControlName="product">
+            <option value="">Select Product</option>
+            @for(product of products; track product.id.toString()){
+            <option [value]="product.id">
+              {{ product.name }}
+            </option>
+            }
+            <!-- <option value="1">
+              Vein360 Reprocessed ClosureFast Catheter (VEN-7-60B)
+            </option>
+            <option value="2">
+              Vein360 Complete Procedure Pack - 7F x 7 cm Introducer Kit
+            </option>
+            <option value="3">Vein360 7F x 7 cm Introducer Sheath Kit</option>
+            <option value="4">Vein360 Basic Procedure Pack</option>
+            <option value="5">
+              Vein360 Reprocessed ClosureFast Catheter (VEN-7-80B)
+            </option>
+            <option value="6">
+              Vein360 Reprocessed ClosureFast Catheter (VEN-7-100B)
+            </option> -->
+          </select>
+
+          <app-validation-message
+            fieldName="product"
+            [formGroup]="donationForm"
+            [ngFormTemplate]="form"
+            [arrayIndex]="index"
+            arrayFieldName="products"
+          ></app-validation-message>
+        </div>
+        <div class="col-md-2">
+          <input
+            type="number"
+            placeholder="Enter units"
+            class="form-control"
+            formControlName="units"
+          />
+          <app-validation-message
+            fieldName="units"
+            [formGroup]="donationForm"
+            [ngFormTemplate]="form"
+            [arrayIndex]="index"
+            arrayFieldName="products"
+          ></app-validation-message>
+        </div>
+      </div>
+      }
+    </ng-container>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-success">Donate</button>
+    <button type="button" class="btn btn-light" (click)="closeModal()">
+      Cancel
+    </button>
+  </div>
+</form>

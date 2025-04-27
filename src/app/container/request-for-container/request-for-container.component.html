@@ -1,0 +1,43 @@
+<form [formGroup]="containerForm" (ngSubmit)="submitForm()" #form="ngForm">
+  <div class="modal-header">
+    <h5 class="modal-title" id="donationModalLabel">Request for a Container</h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      (click)="closeModal()"
+    ></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label for="container-type" class="form-label">Container Type</label>
+        <select
+          class="form-select"
+          id="containerType"
+          name="containerType"
+          formControlName="containerType"
+        >
+          <option value="">Select Container Type</option>
+          @for(containerType of containerTypes; track containerType.id){
+          <option [value]="containerType.id">{{ containerType.name }}</option>
+          }
+        </select>
+
+        <app-validation-message
+          fieldName="containerType"
+          [formGroup]="containerForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-success">Send Request</button>
+    <button type="button" class="btn btn-light" (click)="closeModal()">
+      Cancel
+    </button>
+  </div>
+</form>

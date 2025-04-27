@@ -1,1 +1,149 @@
 /* You can add global styles to this file, and also import other style files */
+// @import "variables";
+
+body {
+  background-color: #f5f7fa;
+  font-family: var(--body-font);
+  font-size: normal;
+  font-size: 16px;
+  font-weight: normal;
+  color: var(--body-text-color);
+  line-height: 1.8;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  line-height: 1.2;
+}
+
+header,
+.content,
+.user-card {
+  background-color: #ffffff;
+}
+
+.content {
+  min-height: 100px;
+}
+
+.user-card {
+  border-radius: 10px;
+  padding: 15px 20px 20px 20px;
+  margin-bottom: 25px;
+
+  .user-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #00000014;
+
+    .user-card-title {
+      font-size: 20px;
+      color: #023350;
+      border-bottom: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .table > :not(caption) > * > * {
+    vertical-align: middle;
+    padding: 0.8rem 0.8rem;
+  }
+}
+
+.user-area {
+  .table {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+
+    th {
+      color: var(--body-text-color);
+    }
+
+    tbody {
+      tr {
+        background: var(--theme-bg-light);
+        margin-bottom: 10px;
+      }
+
+      td {
+        background: unset;
+      }
+
+      .badge-secondary {
+        color: var(--body-text-color);
+      }
+    }
+  }
+
+  .table-list-code {
+    color: var(--theme-color);
+    font-weight: 500;
+  }
+
+  .badge {
+    border-radius: 50px;
+    padding: 5px 12px;
+  }
+
+  .badge-success {
+    background: #defce7;
+    color: #22c79c;
+  }
+
+  .badge-info {
+    background: #f3e8ff;
+    color: #a855f7;
+  }
+
+  .badge-secondary {
+    background: #f3e8ff;
+    color: var(--body-text-color);
+  }
+
+  .badge-primary {
+    background: #dbf7fd;
+    color: #0dcaf0;
+  }
+
+  .badge-danger {
+    background: #fee2e2;
+    color: #ef4444;
+  }
+}
+
+.theme-button {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.theme-button-success {
+  background: var(--theme-color);
+}
+
+.table .btn-link-download {
+  color: var(--bs-table-color);
+  background: transparent;
+  border: none;
+}
+
+.form-control {
+  padding: 12px 20px;
+}
+
+.form-select {
+  height: 50px;
+  line-height: 48px;
+  padding: 0px 20px;
+}

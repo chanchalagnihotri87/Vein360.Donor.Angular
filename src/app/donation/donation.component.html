@@ -1,0 +1,21 @@
+<div class="user-card">
+  <div class="user-card-header">
+    <h4 class="user-card-title">My Donations</h4>
+    <button
+      class="btn btn-success theme-button float-end"
+      type="button"
+      (click)="showAddDonationModal()"
+    >
+      <i class="fa fa-plus"></i>
+      Add Donation
+    </button>
+  </div>
+  <div class="user-card-body">
+    <app-donation-list
+      [donations]="donations"
+      (onDetailClick)="handleShowDonationDetail($event)"
+      (onDispatchClick)="handleDispatchDonation($event)"
+      (onDeleteClick)="handleDeleteDonation($event)"
+    ></app-donation-list>
+  </div>
+</div>
