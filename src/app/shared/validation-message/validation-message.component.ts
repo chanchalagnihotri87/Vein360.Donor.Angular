@@ -31,7 +31,7 @@ export class ValidationMessageComponent {
   }
 
   protected get fieldErrors() {
-    return this.fieldFormControl.errors as ValidationErrors;
+    return this.formControl.errors as ValidationErrors;
   }
 
   private get fieldFormControl() {

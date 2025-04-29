@@ -35,8 +35,11 @@ export class LoginComponent {
       this.accountService
         .signIn(this.loginForm.value.email, this.loginForm.value.password)
         .subscribe(
-          () => {
-            this.authService.logIn();
+          (token: string) => {
+            debugger;
+            console.log(token);
+
+            this.authService.logIn(token);
             this.router.navigate(['']);
           },
           (error) => {

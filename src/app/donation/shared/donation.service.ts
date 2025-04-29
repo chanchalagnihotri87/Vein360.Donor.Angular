@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
+import { AuthService } from '../../login/shared/auth.service';
 import Donation from './donation.model';
 
 @Injectable({
@@ -9,9 +10,13 @@ import Donation from './donation.model';
 export class DonationService {
   private readonly baseUrl = `${environment.apiUrl}/donations`; // Replace with your API URL
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private httpClient: HttpClient,
+    private authService: AuthService
+  ) {}
 
   getDonations() {
+    debugger;
     return this.httpClient.get<Donation[]>(this.baseUrl);
   }
 

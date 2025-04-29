@@ -11,7 +11,7 @@ export class AccountService {
   constructor(private httpClient: HttpClient) {}
 
   signIn(email: string, password: string) {
-    return this.httpClient.post(`${this.baseUrl}/signin`, {
+    return this.httpClient.post<string>(`${this.baseUrl}/signin`, {
       email: email,
       password: password,
     });
