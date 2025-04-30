@@ -4,7 +4,6 @@ import { AuthService } from './login/shared/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   var authService = inject(AuthService);
-  debugger;
 
   if (req.url.indexOf('signin') !== -1) {
     return next(req);

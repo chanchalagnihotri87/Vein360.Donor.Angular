@@ -16,7 +16,6 @@ export class DonationService {
   ) {}
 
   getDonations() {
-    debugger;
     return this.httpClient.get<Donation[]>(this.baseUrl);
   }
 
