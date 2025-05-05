@@ -36,12 +36,12 @@
         disabled
       >
         <option value="">Select Container</option>
-        @for(container of containers; track container.id){
+        @for(container of associatedContainers; track container.id){
         <option
           [value]="container.id"
           [selected]="container.id == donation!.containerId"
         >
-          #{{ container.id }} {{ container.containerType.name }}
+          {{ container.name }}
         </option>
         }
       </select>
@@ -84,6 +84,12 @@
     <div class="col-md-2">
       <label>Units</label>
     </div>
+    <div class="col-md-1">
+      <label>Accepted</label>
+    </div>
+    <div class="col-md-1">
+      <label>Rejected</label>
+    </div>
   </div>
 
   <ng-container>
@@ -115,6 +121,13 @@
           [value]="donationProduct.units"
           disabled
         />
+      </div>
+
+      <div class="col-md-1">
+        <input type="number" class="form-control" disabled />
+      </div>
+      <div class="col-md-1">
+        <input type="number" class="form-control" disabled />
       </div>
     </div>
     }

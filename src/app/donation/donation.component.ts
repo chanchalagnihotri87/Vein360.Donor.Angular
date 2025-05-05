@@ -11,6 +11,7 @@ import { BreadcrumbItem } from '../breadcrumb/shared/breadcrumb-item.model';
 import { BreadcrumbService } from '../breadcrumb/shared/breadcrumb.service';
 import DonationContainer from '../container/shared/donation-container.model';
 import { DonationContainerService } from '../container/shared/donation-container.service';
+import { DonationContainerStatus } from '../shared/enums/donation-container.status';
 import Donation from './shared/donation.model';
 import { DonationService } from './shared/donation.service';
 import Product from './shared/product.model';
@@ -26,6 +27,7 @@ export class DonationComponent implements OnInit {
   private confirmationModalRef?: BsModalRef;
   private products: Product[] = [];
   private donationContainers: DonationContainer[] = [];
+  private allDonationContainers: DonationContainer[] = [];
 
   protected donations: Donation[] = [];
 
@@ -46,7 +48,7 @@ export class DonationComponent implements OnInit {
     });
 
     this.containerService
-      .getAvalableContainers()
+      .getContainers()
       .subscribe((containers: DonationContainer[]) => {
         console.log(containers);
         this.donationContainers = containers;
@@ -62,7 +64,9 @@ export class DonationComponent implements OnInit {
       class: 'modal-xl',
       initialState: {
         products: this.products,
-        containers: this.donationContainers,
+        containers: this.donationContainers.filter(
+          (x) => x.status == DonationContainerStatus.Received
+        ),
       },
     };
     this.modelRef = this.modalService.show(AddDonationComponent, initialState);
