@@ -4,7 +4,7 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthService {
-  private tokenItemName: string = 'vein-360-token';
+  private tokenItemName: string = 'vein-360-donor-token';
   private loggedIn = signal<boolean>(false);
   private access_Token = signal<string | undefined>(undefined);
   constructor() {
@@ -26,6 +26,7 @@ export class AuthService {
     this.loggedIn.set(false);
   }
 
+  //#region Get Properties
   public get isLoggedIn() {
     return this.loggedIn.asReadonly();
   }
@@ -33,4 +34,6 @@ export class AuthService {
   public get token() {
     return this.access_Token.asReadonly();
   }
+
+  //#endregion
 }

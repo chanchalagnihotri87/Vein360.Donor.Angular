@@ -11,7 +11,6 @@ import { BreadcrumbItem } from '../breadcrumb/shared/breadcrumb-item.model';
 import { BreadcrumbService } from '../breadcrumb/shared/breadcrumb.service';
 import DonationContainer from '../container/shared/donation-container.model';
 import { DonationContainerService } from '../container/shared/donation-container.service';
-import { DonationContainerStatus } from '../shared/enums/donation-container.status';
 import Donation from './shared/donation.model';
 import { DonationService } from './shared/donation.service';
 import Product from './shared/product.model';
@@ -23,11 +22,10 @@ import { ProductService } from './shared/product.service';
   templateUrl: './donation.component.html',
 })
 export class DonationComponent implements OnInit {
-  private modelRef?: BsModalRef;
+  private donationModalRef?: BsModalRef;
   private confirmationModalRef?: BsModalRef;
   private products: Product[] = [];
   private donationContainers: DonationContainer[] = [];
-  private allDonationContainers: DonationContainer[] = [];
 
   protected donations: Donation[] = [];
 
@@ -40,41 +38,30 @@ export class DonationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadProducts();
     this.loadDonations();
-
-    this.productService.getProducts().subscribe((products) => {
-      console.log(products);
-      this.products = products;
-    });
-
-    this.containerService
-      .getContainers()
-      .subscribe((containers: DonationContainer[]) => {
-        console.log(containers);
-        this.donationContainers = containers;
-      });
-
-    this.breadcrumbService.breadcrumbs.set([
-      new BreadcrumbItem('Donations', ''),
-    ]);
+    this.loadContainers();
+    this.setBreadcrumb();
   }
+
+  //#region Add Donation
 
   showAddDonationModal() {
     const initialState: ModalOptions = {
       class: 'modal-xl',
       initialState: {
         products: this.products,
-        containers: this.donationContainers.filter(
-          (x) => x.status == DonationContainerStatus.Received
-        ),
       },
     };
-    this.modelRef = this.modalService.show(AddDonationComponent, initialState);
-    this.modelRef.content.onClose.subscribe(() => {
+    this.donationModalRef = this.modalService.show(
+      AddDonationComponent,
+      initialState
+    );
+    this.donationModalRef.content.onClose.subscribe(() => {
       this.closeModal();
     });
 
-    this.modelRef.content.onSubmit.subscribe((donation: Donation) => {
+    this.donationModalRef.content.onSubmit.subscribe((donation: Donation) => {
       this.handleAddDonation(donation);
       this.closeModal();
     });
@@ -86,13 +73,39 @@ export class DonationComponent implements OnInit {
     });
   }
 
+  //#endregion
+
+  //#region Donation Detail
   handleShowDonationDetail(donationId: number) {
     this.donationService.getDonationById(donationId).subscribe((donation) => {
       console.log(donation);
-      this.openDonationDetailModal(donation);
+      this.showDonationDetailModal(donation);
     });
   }
 
+  private showDonationDetailModal(donation: Donation) {
+    const configuartions: ModalOptions = {
+      initialState: {
+        donation: donation,
+        products: this.products,
+        containers: this.donationContainers,
+      },
+      class: 'modal-xl',
+    };
+
+    this.donationModalRef = this.modalService.show(
+      DonationDetailComponent,
+      configuartions
+    );
+
+    this.donationModalRef.content.onClose.subscribe(() => {
+      this.closeModal();
+    });
+  }
+
+  //#endregion
+
+  //#region Delete Donation
   handleDeleteDonation(dontationId: number) {
     const initialState: ModalOptions = {
       initialState: {
@@ -118,32 +131,9 @@ export class DonationComponent implements OnInit {
     });
   }
 
-  handleDispatchDonation(dontationId: number) {
-    const initialState: ModalOptions = {
-      initialState: {
-        message: 'Are you sure you want to dispatch this donation?',
-      },
-      class: 'modal-md',
-    };
-    this.confirmationModalRef = this.modalService.show(
-      ConfirmationMessageComponent,
-      initialState
-    );
+  //#endregion
 
-    this.confirmationModalRef.content.onYes.subscribe(() => {
-      this.donationService.dispatchDonation(dontationId).subscribe(() => {
-        this.loadDonations();
-      });
-
-      this.hideConfirmationModal();
-    });
-
-    this.confirmationModalRef.content.onNo.subscribe(() => {
-      this.hideConfirmationModal();
-    });
-  }
-
-  //#region  Privaate Methods
+  //#region Private Methods
   private loadDonations() {
     this.donationService.getDonations().subscribe((donations) => {
       console.log(donations);
@@ -151,28 +141,30 @@ export class DonationComponent implements OnInit {
     });
   }
 
-  private openDonationDetailModal(donation: Donation) {
-    const configuartions: ModalOptions = {
-      initialState: {
-        donation: donation,
-        products: this.products,
-        containers: this.donationContainers,
-      },
-      class: 'modal-xl',
-    };
+  private setBreadcrumb() {
+    this.breadcrumbService.breadcrumbs.set([
+      new BreadcrumbItem('Donations', ''),
+    ]);
+  }
 
-    this.modelRef = this.modalService.show(
-      DonationDetailComponent,
-      configuartions
-    );
+  private loadContainers() {
+    this.containerService
+      .getContainers()
+      .subscribe((containers: DonationContainer[]) => {
+        console.log(containers);
+        this.donationContainers = containers;
+      });
+  }
 
-    this.modelRef.content.onClose.subscribe(() => {
-      this.closeModal();
+  private loadProducts() {
+    this.productService.getProducts().subscribe((products) => {
+      console.log(products);
+      this.products = products;
     });
   }
 
   private closeModal() {
-    this.modelRef?.hide();
+    this.donationModalRef?.hide();
   }
 
   private hideConfirmationModal() {

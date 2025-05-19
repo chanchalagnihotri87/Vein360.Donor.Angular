@@ -13,17 +13,19 @@ export class ContainerListComponent {
   @Input({ required: true }) containers: DonationContainer[] = [];
 
   onDelete = output<number>();
-  onReceive = output<number>();
 
+  //#region  Protected Methods
+
+  protected handleDeleteContainer(containerId: number) {
+    this.onDelete.emit(containerId);
+  }
+
+  //#endregion
+
+  //#region Get Properties
   get ContainerStatus() {
     return DonationContainerStatus;
   }
 
-  handleDeleteContainer(containerId: number) {
-    this.onDelete.emit(containerId);
-  }
-
-  handleReceivedContainer(containerId: number) {
-    this.onReceive.emit(containerId);
-  }
+  //#endregion
 }

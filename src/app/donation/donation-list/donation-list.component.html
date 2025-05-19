@@ -30,18 +30,12 @@
           </button>
         </td>
         <td>
-          @switch(donation.status) { @case (DonationStatus.Pending) {
-          <span class="badge badge-primary">Pending</span>
-          } @case (DonationStatus.Dispatched) {
-          <span class="badge badge-info">Dispatched</span>
-          } @case (DonationStatus.Received) {
-          <span class="badge badge-danger">Received</span>
-          } @case (DonationStatus.Verified) {
-          <span class="badge badge-success">Verified</span>
+          @switch(donation.status) { @case (DonationStatus.Donated) {
+          <span class="badge badge-primary">Donated</span>
+          } @case (DonationStatus.Processed) {
+          <span class="badge badge-success">Processed</span>
           } @case (DonationStatus.Paid) {
           <span class="badge badge-info">Paid</span>
-          } @default {
-          <span class="badge badge-primary">Pending</span>
           } }
         </td>
         <td>
@@ -57,16 +51,7 @@
             <i class="fa fa-eye fa-lg"></i>
           </button>
 
-          @if(donation.status == DonationStatus.Pending) {
-          <button
-            class="btn btn-outline-secondary btn-sm me-2"
-            data-toggle="tooltip"
-            data-placement="top"
-            tooltip="Dispatch"
-            (click)="dispatchDonation(donation.id)"
-          >
-            <i class="fa fa-truck fa-lg"></i>
-          </button>
+          @if(donation.status == DonationStatus.Donated) {
 
           <button
             class="btn btn-outline-secondary btn-sm"

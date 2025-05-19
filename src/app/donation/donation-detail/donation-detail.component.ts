@@ -49,4 +49,8 @@ export class DonationDetailComponent implements OnInit {
         )
     );
   }
+
+  get ContainerType() {
+    return ContainerType;
+  }
 }

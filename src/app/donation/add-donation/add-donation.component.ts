@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, output } from '@angular/core';
+import { Component, Input, OnInit, output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -10,6 +10,7 @@ import {
 
 import ContainerListItem from '../../container/shared/container-list-item-model';
 import DonationContainer from '../../container/shared/donation-container.model';
+import { DonationContainerService } from '../../container/shared/donation-container.service';
 import { ContainerType } from '../../shared/enums/container-type.enum';
 import { ValidationMessageComponent } from '../../shared/validation-message/validation-message.component';
 import DonationProduct from '../shared/donation-product.model';
@@ -24,71 +25,65 @@ import Product from '../shared/product.model';
   styleUrl: './add-donation.component.scss',
 })
 export class AddDonationComponent implements OnInit {
-  private formBuilder = inject(FormBuilder);
-
-  selectedContainerType: string = '';
-
-  @Input({ required: true }) containers: DonationContainer[] = [];
   @Input({ required: true }) products: Product[] = [];
 
   public onSubmit = output<Donation>();
   public onClose = output();
 
-  constructor(private fedexPackService: FedexService) {}
+  public containers: DonationContainer[] = [];
+  public length?: number;
+  public width?: number;
+  public height?: number;
+  public selectedContainerType: string;
+  public donationForm: FormGroup;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private fedexPackService: FedexService,
+    private dontainerContainerService: DonationContainerService
+  ) {
+    this.donationForm = this.createDonationForm();
+    this.selectedContainerType = ContainerType.OwnCustomPacking.toString();
+  }
 
   ngOnInit(): void {
-    (this.donationForm.get('products') as FormArray).controls[0]
-      .get('product')
-      ?.setValue(''); // Set "Select Product" as default value for the first product control
-
-    (this.donationForm.get('products') as FormArray).controls[0]
-      .get('units')
-      ?.setValue(''); // Set empty value as default value for the first units control
+    this.setDefaultValuesInFormControls();
+    this.subscribeToContainerTypeChange();
+    this.loadDonationContainers();
   }
 
-  closeModal() {
-    this.onClose.emit();
-  }
+  //#region  Public Methods
 
-  submitForm() {
+  public submitForm() {
     if (this.donationForm.valid) {
       const newDonation = new Donation(
         this.donationForm.value.containerType,
-        this.donationForm.value.container,
-        this.donationForm.value.weight,
+        this.donationForm.value.container != ''
+          ? this.donationForm.value.container
+          : null,
         this.donationForm.value.products.map(
           (productItem: { product: number; units: number }) => {
             return new DonationProduct(productItem.product, productItem.units);
           }
-        )
+        ),
+        this.selectedContainerType == ContainerType.OwnCustomPacking.toString()
+          ? this.donationForm.value.length
+          : undefined,
+        this.selectedContainerType == ContainerType.OwnCustomPacking.toString()
+          ? this.donationForm.value.width
+          : undefined,
+        this.selectedContainerType == ContainerType.OwnCustomPacking.toString()
+          ? this.donationForm.value.height
+          : undefined
       );
 
-      debugger;
       this.onSubmit.emit(newDonation);
       this.onClose.emit();
     }
   }
 
-  donationForm: FormGroup = this.formBuilder.group({
-    containerType: ['', Validators.required],
-    container: ['', Validators.required],
-    weight: ['', Validators.required],
-    products: this.formBuilder.array([
-      this.formBuilder.group({
-        product: [
-          this.formBuilder.control<number | null>(null),
-          Validators.required,
-        ],
-        units: [
-          this.formBuilder.control<number | null>(null),
-          Validators.required,
-        ],
-      }),
-    ]),
-  });
-
-  addProduct() {
-    this.productControls.push(
+  public addProduct() {
+    this.productFormControls.push(
       this.formBuilder.group({
         product: ['', Validators.required],
         units: ['', Validators.required],
@@ -96,21 +91,17 @@ export class AddDonationComponent implements OnInit {
     );
   }
 
-  get containerType() {
-    return this.donationForm.get('containerType') as FormControl;
+  public containerTypeChanged() {
+    (this.donationForm.get('container') as FormControl)?.setValue(''); // Set
   }
 
-  get container() {
-    return this.donationForm.get('container') as FormControl;
+  public closeModal() {
+    this.onClose.emit();
   }
 
-  get weight() {
-    return this.donationForm.get('weight') as FormControl;
-  }
+  //#endregion
 
-  get productControls() {
-    return this.donationForm.get('products') as FormArray;
-  }
+  //#region Get Properties
 
   get ContainerType() {
     return ContainerType;
@@ -145,4 +136,109 @@ export class AddDonationComponent implements OnInit {
         )
     );
   }
+
+  get containerTypeFormControl() {
+    return this.donationForm.get('containerType') as FormControl;
+  }
+
+  get containerFormControl() {
+    return this.donationForm.get('container') as FormControl;
+  }
+
+  get lengthFormControl() {
+    return this.donationForm.get('length') as FormControl;
+  }
+
+  get widhtFormControl() {
+    return this.donationForm.get('width') as FormControl;
+  }
+
+  get heightFormControl() {
+    return this.donationForm.get('height') as FormControl;
+  }
+
+  get productFormControls() {
+    return this.donationForm.get('products') as FormArray;
+  }
+
+  //#endregion
+
+  //#region  Private Methods
+
+  private createDonationForm() {
+    return this.formBuilder.group({
+      containerType: ['', Validators.required],
+      container: ['', Validators.required],
+      // weight: ['', Validators.required],
+      weight: [''],
+      length: ['', Validators.required],
+      width: ['', Validators.required],
+      height: ['', Validators.required],
+
+      products: this.formBuilder.array([
+        this.formBuilder.group({
+          product: [
+            this.formBuilder.control<number | null>(null),
+            Validators.required,
+          ],
+          units: [
+            this.formBuilder.control<number | null>(null),
+            Validators.required,
+          ],
+        }),
+      ]),
+    });
+  }
+
+  private setDefaultValuesInFormControls() {
+    (this.donationForm.get('products') as FormArray).controls[0]
+      .get('product')
+      ?.setValue(''); // Set "Select Product" as default value for the first product control
+
+    (this.donationForm.get('products') as FormArray).controls[0]
+      .get('units')
+      ?.setValue('');
+  }
+
+  private subscribeToContainerTypeChange() {
+    this.donationForm.get('containerType')?.valueChanges.subscribe((val) => {
+      this.updateContainerValidations(val);
+      this.updateDimentionValidations(val);
+    });
+  }
+
+  private updateContainerValidations(containerType: string) {
+    if (containerType == ContainerType.OwnCustomPacking.toString()) {
+      this.containerFormControl.clearValidators();
+    } else {
+      this.containerFormControl.setValidators([Validators.required]);
+    }
+
+    this.containerFormControl.updateValueAndValidity();
+  }
+
+  private updateDimentionValidations(containerType: string) {
+    if (containerType == ContainerType.OwnCustomPacking.toString()) {
+      this.lengthFormControl.setValidators([Validators.required]);
+      this.widhtFormControl.setValidators([Validators.required]);
+      this.heightFormControl.setValidators([Validators.required]);
+    } else {
+      this.lengthFormControl.clearValidators();
+      this.widhtFormControl.clearValidators();
+      this.heightFormControl.clearValidators();
+    }
+
+    this.lengthFormControl.updateValueAndValidity();
+    this.widhtFormControl.updateValueAndValidity();
+    this.heightFormControl.updateValueAndValidity();
+  }
+
+  private loadDonationContainers() {
+    this.dontainerContainerService
+      .getAvalableContainers()
+      .subscribe((containers) => {
+        this.containers = containers;
+      });
+  }
+  //#endregion
 }

@@ -11,10 +11,10 @@
     </button>
   </div>
   <div class="user-card-body">
+    <!-- Donations List -->
     <app-donation-list
       [donations]="donations"
       (onDetailClick)="handleShowDonationDetail($event)"
-      (onDispatchClick)="handleDispatchDonation($event)"
       (onDeleteClick)="handleDeleteDonation($event)"
     ></app-donation-list>
   </div>

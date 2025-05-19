@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment.development';
   providedIn: 'root',
 })
 export class AccountService {
-  private readonly baseUrl = `${environment.apiUrl}/accounts`; // Replace with your API URL
+  private readonly baseUrl = `${environment.apiUrl}/accounts/donor`; // Replace with your API URL
 
   constructor(private httpClient: HttpClient) {}
 

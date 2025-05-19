@@ -1,7 +1,5 @@
 export enum DonationStatus {
-  Pending = 1,
-  Dispatched = 2,
-  Received = 3,
-  Verified = 4,
-  Paid = 5,
+  Donated = 1,
+  Processed = 2,
+  Paid = 3,
 }

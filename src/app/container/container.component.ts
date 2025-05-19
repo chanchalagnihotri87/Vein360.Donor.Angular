@@ -17,34 +17,28 @@ import { DonationContainerService } from './shared/donation-container.service';
   styleUrl: './container.component.scss',
 })
 export class ContainerComponent implements OnInit {
-  private modelRef?: BsModalRef;
-  private confirmationModalRef?: BsModalRef;
-
   protected containers: DonationContainer[] = [];
   protected containerTypes: ContainerType[] = [];
 
+  private modelRef?: BsModalRef;
+  private confirmationModalRef?: BsModalRef;
+
   constructor(
-    private donationContainerService: DonationContainerService,
-    private breadcrumbService: BreadcrumbService,
     private modalService: BsModalService,
-    private containerTypeService: ContatinerTypeService
+    private breadcrumbService: BreadcrumbService,
+    private containerTypeService: ContatinerTypeService,
+    private donationContainerService: DonationContainerService
   ) {}
+
   ngOnInit(): void {
-    this.breadcrumbService.breadcrumbs.set([
-      { label: 'Containers', path: '/containers' },
-    ]);
-
+    this.setBereadcrumb();
+    this.loadContainerTypes();
     this.loadDonationContainers();
-
-    this.containerTypeService
-      .getContainerTypes()
-      .subscribe((containerTypes) => {
-        console.log(containerTypes);
-        this.containerTypes = containerTypes;
-      });
   }
 
-  showRequestContainerModal() {
+  //#region  Protected Methods
+
+  protected showRequestContainerModal() {
     const initialState: ModalOptions = {
       class: 'modal-md',
       initialState: { containerTypes: this.containerTypes },
@@ -64,15 +58,7 @@ export class ContainerComponent implements OnInit {
     });
   }
 
-  handleRequestForContainer(containerTypeId: number) {
-    this.donationContainerService
-      .requestForContainer(containerTypeId)
-      .subscribe(() => {
-        this.loadDonationContainers();
-      });
-  }
-
-  handleDeleteContainer(donationContainerId: number) {
+  protected handleDeleteContainer(donationContainerId: number) {
     const initialState: ModalOptions = {
       initialState: {
         message: 'Are you sure you want to delete this container?',
@@ -99,39 +85,23 @@ export class ContainerComponent implements OnInit {
     });
   }
 
-  handleReceiveContainer(donationContainerId: number) {
-    const initialState: ModalOptions = {
-      initialState: {
-        message: 'Are you sure you have received this container?',
-      },
-      class: 'modal-md',
-    };
-    this.confirmationModalRef = this.modalService.show(
-      ConfirmationMessageComponent,
-      initialState
-    );
+  //#endregion
 
-    this.confirmationModalRef.content.onYes.subscribe(() => {
-      this.donationContainerService
-        .receiveContainer(donationContainerId)
-        .subscribe(() => {
-          this.loadDonationContainers();
-        });
+  //#region Private Methods
 
-      this.hideConfirmationModal();
-    });
-
-    this.confirmationModalRef.content.onNo.subscribe(() => {
-      this.hideConfirmationModal();
-    });
+  private setBereadcrumb() {
+    this.breadcrumbService.breadcrumbs.set([
+      { label: 'Containers', path: '/containers' },
+    ]);
   }
 
-  private closeModal() {
-    this.modelRef?.hide();
-  }
-
-  private hideConfirmationModal() {
-    this.confirmationModalRef?.hide();
+  private loadContainerTypes() {
+    this.containerTypeService
+      .getContainerTypes()
+      .subscribe((containerTypes) => {
+        console.log(containerTypes);
+        this.containerTypes = containerTypes;
+      });
   }
 
   private loadDonationContainers() {
@@ -145,4 +115,22 @@ export class ContainerComponent implements OnInit {
       },
     });
   }
+
+  private handleRequestForContainer(containerTypeId: number) {
+    this.donationContainerService
+      .requestForContainer(containerTypeId)
+      .subscribe(() => {
+        this.loadDonationContainers();
+      });
+  }
+
+  private closeModal() {
+    this.modelRef?.hide();
+  }
+
+  private hideConfirmationModal() {
+    this.confirmationModalRef?.hide();
+  }
+
+  //#endregion
 }

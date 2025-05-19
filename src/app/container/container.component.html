@@ -1,6 +1,7 @@
 <div class="user-card">
   <div class="user-card-header">
     <h4 class="user-card-title">My Containers</h4>
+    <!-- Request for a container button -->
     <button
       class="vein-btn-success theme-button float-end"
       type="button"
@@ -10,10 +11,10 @@
     </button>
   </div>
   <div class="user-card-body">
+    <!-- Containers List -->
     <app-container-list
       [containers]="containers"
       (onDelete)="handleDeleteContainer($event)"
-      (onReceive)="handleReceiveContainer($event)"
     >
     </app-container-list>
   </div>

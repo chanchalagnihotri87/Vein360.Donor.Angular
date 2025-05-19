@@ -24,10 +24,17 @@
         <option value="">Select Container Type</option>
         <option value="1">Vein360 Container</option>
         <option value="2">Fedex Container</option>
+        <option value="3">Own Custom Packing</option>
       </select>
     </div>
+    @if(donation?.containerType!=ContainerType.OwnCustomPacking){
+
     <div class="col-md-4">
-      <label for="container" class="form-label">Container</label>
+      <label for="container" class="form-label">{{
+        donation?.containerType == ContainerType.Vein360Container
+          ? "Container"
+          : "Packing Type"
+      }}</label>
       <select
         class="form-select"
         id="container"
@@ -35,7 +42,6 @@
         [value]="donation?.containerId"
         disabled
       >
-        <option value="">Select Container</option>
         @for(container of associatedContainers; track container.id){
         <option
           [value]="container.id"
@@ -46,19 +52,45 @@
         }
       </select>
     </div>
+    } @if(donation?.containerType==ContainerType.OwnCustomPacking) {
 
-    <div class="col-md-2">
-      <label for="weight" class="form-label">Weight (in pounds)</label>
-      <input
-        type="number"
-        class="form-control"
-        id="weight"
-        placeholder="Enter weight"
-        formControlName="weight"
-        disabled
-        [value]="donation?.weight"
-      />
+    <div class="col-md-4">
+      <div class="row">
+        <div class="col-md-4">
+          <label for="length" class="form-label">Length "</label>
+          <input
+            type="number"
+            class="form-control length-control"
+            id="length"
+            disabled
+            [value]="donation?.length"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label for="width" class="form-label">Width "</label>
+          <input
+            type="number"
+            class="form-control length-control"
+            id="Width"
+            disabled
+            [value]="donation?.width"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label for="height" class="form-label">Height "</label>
+          <input
+            type="number"
+            class="form-control length-control"
+            id="height"
+            disabled
+            [value]="donation?.height"
+          />
+        </div>
+      </div>
     </div>
+    }
 
     <div class="col-md-2">
       <label for="weight" class="form-label">Tracking No.</label>

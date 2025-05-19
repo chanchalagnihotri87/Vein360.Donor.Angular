@@ -24,35 +24,20 @@
           @switch (container.status) { @case (ContainerStatus.Requested) {
           <span class="badge badge-primary">Requested</span>
           } @case (ContainerStatus.Approved) {
-          <span class="badge badge-info">Approved</span>
-          } @case (ContainerStatus.Rejected) {
-          <span class="badge badge-danger">Approved</span>
-          } @case (ContainerStatus.Dispatched) {
-          <span class="badge badge-info">Dispatched</span>
-          } @case (ContainerStatus.Received) {
-          <span class="badge badge-success">Received</span>
+          <span class="badge badge-success">Approved</span>
           } @case (ContainerStatus.Filled) {
           <span class="badge badge-info">Filled</span>
-          } @case (ContainerStatus.Donated) {
-          <span class="badge badge-info">Donated</span>
-          } }
+          } @case (ContainerStatus.Processed) {
+          <span class="badge badge-info">Processed</span>
+          } @case (ContainerStatus.Rejected) {
+          <span class="badge badge-danger">Rejected</span>
+          }}
         </td>
         <td>
           {{ container.createdDate | date : "mediumDate" }}
         </td>
         <td>
-          @if(container.status==ContainerStatus.Dispatched){
-          <button
-            class="btn btn-outline-secondary btn-sm"
-            data-toggle="tooltip"
-            data-placement="top"
-            tooltip="Receive"
-            type="button"
-            (click)="handleReceivedContainer(container.id)"
-          >
-            <i class="fa fa-truck fa-lg"></i>
-          </button>
-          } @if(container.status==ContainerStatus.Requested){
+          @if(container.status==ContainerStatus.Requested){
           <button
             class="btn btn-outline-secondary btn-sm"
             data-toggle="tooltip"

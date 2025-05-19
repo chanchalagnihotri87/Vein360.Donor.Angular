@@ -6,34 +6,36 @@ export default class Donation {
   id: number = 0;
   containerType: number;
   containerId: number;
-  weight?: number;
+  length?: number;
+  width?: number;
+  height?: number;
   productTypes: string[] = [];
   trackingNumber: string = '';
   labelFileName: string = '';
   labelPath?: string;
   createdDate: Date = new Date();
-  status: DonationStatus = DonationStatus.Pending;
+  status: DonationStatus = DonationStatus.Donated;
 
   products: DonationProduct[];
-  container: DonationContainer | undefined; // This will be set later when the container is fetched
+  container?: DonationContainer; // This will be set later when the container is fetched
 
   constructor(
     containerType: number,
     containerId: number,
-    weight: number,
-    products: DonationProduct[]
+    products: DonationProduct[],
+    length: number | undefined = undefined,
+    width: number | undefined = undefined,
+    height: number | undefined = undefined
   ) {
     this.containerId = containerId;
     this.containerType = containerType;
-    this.weight = weight;
     this.products = products;
+    this.length = length;
+    this.width = width;
+    this.height = height;
   }
 
   get ProductIds(): number[] {
     return this.products.map((product) => product.productId);
   }
-
-  // get dateObject(): Date {
-  //   return ConversionHelper.convertStringToDate(this.createdDate);
-  // }
 }

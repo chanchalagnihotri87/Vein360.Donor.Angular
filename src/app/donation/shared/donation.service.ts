@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { AuthService } from '../../login/shared/auth.service';
 import Donation from './donation.model';
 
 @Injectable({
@@ -10,10 +9,7 @@ import Donation from './donation.model';
 export class DonationService {
   private readonly baseUrl = `${environment.apiUrl}/donations`; // Replace with your API URL
 
-  constructor(
-    private httpClient: HttpClient,
-    private authService: AuthService
-  ) {}
+  constructor(private httpClient: HttpClient) {}
 
   getDonations() {
     return this.httpClient.get<Donation[]>(this.baseUrl);
@@ -27,7 +23,9 @@ export class DonationService {
     let donationData = {
       containerType: donation.containerType,
       containerId: donation.containerId,
-      weight: donation.weight,
+      length: donation.length,
+      width: donation.width,
+      height: donation.height,
       products: donation.products.map((product) => product),
     };
 
@@ -36,9 +34,5 @@ export class DonationService {
 
   deleteDonation(donationId: number) {
     return this.httpClient.delete(`${this.baseUrl}/${donationId}`);
-  }
-
-  dispatchDonation(donationId: number) {
-    return this.httpClient.patch(`${this.baseUrl}/dispatch/${donationId}`, {});
   }
 }

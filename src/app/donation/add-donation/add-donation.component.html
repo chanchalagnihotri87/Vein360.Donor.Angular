@@ -9,9 +9,10 @@
       (click)="closeModal()"
     ></button>
   </div>
-
+  <!-- Modal Body -->
   <div class="modal-body">
     <div class="row mb-3">
+      <!-- Container Type -->
       <div class="col-md-4">
         <label for="container-type" class="form-label">Container Type</label>
         <select
@@ -20,13 +21,17 @@
           name="containerType"
           formControlName="containerType"
           [(ngModel)]="selectedContainerType"
+          (change)="containerTypeChanged()"
         >
-          <option value="">Select Container Type</option>
+          <!-- <option value="">Select Container Type</option> -->
           <option [value]="ContainerType.Vein360Container">
             Vein360 Container
           </option>
           <option [value]="ContainerType.FedexContainer">
             Fedex Container
+          </option>
+          <option [value]="ContainerType.OwnCustomPacking">
+            Own Custom Packing
           </option>
         </select>
 
@@ -36,10 +41,26 @@
           [ngFormTemplate]="form"
         ></app-validation-message>
       </div>
+
+      <!-- Container/Packing Type -->
+      @if(selectedContainerType!=ContainerType.OwnCustomPacking.toString()){
       <div class="col-md-4">
-        <label for="container" class="form-label">Container</label>
+        <label for="container" class="form-label">
+          {{
+            selectedContainerType == ContainerType.Vein360Container.toString()
+              ? "Container"
+              : "Packing Type"
+          }}</label
+        >
         <select class="form-select" id="container" formControlName="container">
-          <option value="">Select Container</option>
+          <option value="">
+            Select
+            {{
+              selectedContainerType == ContainerType.Vein360Container.toString()
+                ? "Container"
+                : "Packing Type"
+            }}
+          </option>
           @for(container of associatedContainers; track container.id){
           <option [value]="container.id">
             {{ container.name }}
@@ -52,35 +73,75 @@
           [ngFormTemplate]="form"
         ></app-validation-message>
       </div>
+      }
 
-      <div class="col-md-2">
-        <label for="weight" class="form-label">Weight (in pounds)</label>
-        <input
-          type="number"
-          class="form-control"
-          id="weight"
-          placeholder="Enter weight"
-          formControlName="weight"
-        />
-        <app-validation-message
-          fieldName="weight"
-          [formGroup]="donationForm"
-          [ngFormTemplate]="form"
-        ></app-validation-message>
+      <!-- Dmimentions Length, Width, Height -->
+      @if(selectedContainerType == ContainerType.OwnCustomPacking.toString()){
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-4">
+            <label for="length" class="form-label">Length "</label>
+            <input
+              type="number"
+              class="form-control length-control"
+              id="length"
+              placeholder=""
+              formControlName="length"
+              [(ngModel)]="length"
+            />
+            <app-validation-message
+              fieldName="length"
+              [formGroup]="donationForm"
+              [ngFormTemplate]="form"
+            ></app-validation-message>
+          </div>
+
+          <div class="col-md-4">
+            <label for="width" class="form-label">Width "</label>
+            <input
+              type="number"
+              class="form-control length-control"
+              id="Width"
+              placeholder=""
+              formControlName="width"
+              [(ngModel)]="width"
+            />
+            <app-validation-message
+              fieldName="width"
+              [formGroup]="donationForm"
+              [ngFormTemplate]="form"
+            ></app-validation-message>
+          </div>
+
+          <div class="col-md-4">
+            <label for="height" class="form-label">Height "</label>
+            <input
+              type="number"
+              class="form-control length-control"
+              id="height"
+              placeholder=""
+              formControlName="height"
+              [(ngModel)]="height"
+            />
+            <app-validation-message
+              fieldName="height"
+              [formGroup]="donationForm"
+              [ngFormTemplate]="form"
+            ></app-validation-message>
+          </div>
+        </div>
       </div>
+      }
     </div>
+
+    <!-- Products -->
     <div class="row pb-2 mt-5 mb-3 border-bottom">
       <div class="col-md-12">
         <span class="fw-bold">Products</span>
-        <button
-          class="vein-btn-success btn-sm float-end"
-          type="button"
-          (click)="addProduct()"
-        >
-          Add Product
-        </button>
       </div>
     </div>
+
+    <!-- Header Row -->
     <div class="row mb-3">
       <div class="col-md-6">
         <label>Product</label>
@@ -90,8 +151,9 @@
       </div>
     </div>
 
+    <!-- Product Controls -->
     <ng-container formArrayName="products">
-      @for(productControl of productControls.controls; track $index; let
+      @for(productControl of productFormControls.controls; track $index; let
       index=$index){
       <div class="row mb-3" [formGroupName]="index">
         <div class="col-md-6">
@@ -130,7 +192,23 @@
       </div>
       }
     </ng-container>
+
+    <!-- Add Product Button -->
+    <div class="row">
+      <div class="col-12 mt-2">
+        <button
+          class="vein-btn-success btn-sm"
+          type="button"
+          (click)="addProduct()"
+        >
+          <i class="fa fa-plus"></i>
+          Add Product
+        </button>
+      </div>
+    </div>
   </div>
+
+  <!-- Modal Footer -->
   <div class="modal-footer">
     <button type="submit" class="vein-btn-success">Donate</button>
     <button type="button" class="vein-btn-light" (click)="closeModal()">

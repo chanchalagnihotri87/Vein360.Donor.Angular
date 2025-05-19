@@ -13,7 +13,6 @@ export class ConfirmationMessageComponent {
   onNo = output<void>();
 
   onNoClick() {
-    debugger;
     this.onNo.emit();
   }
 

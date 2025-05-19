@@ -34,19 +34,16 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.accountService
         .signIn(this.loginForm.value.email, this.loginForm.value.password)
-        .subscribe(
-          (token: string) => {
-            debugger;
-            console.log(token);
-
+        .subscribe({
+          next: (token: string) => {
             this.authService.logIn(token);
             this.router.navigate(['']);
           },
-          (error) => {
+          error: (error) => {
             console.log(error);
             alert('You email & password are not valid.');
-          }
-        );
+          },
+        });
     }
   }
 }
