@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { LoaderComponent } from './loader/loader.component';
@@ -7,7 +7,7 @@ import { AuthService } from './login/shared/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, BreadcrumbComponent, LoaderComponent],
+  imports: [RouterOutlet, RouterModule, BreadcrumbComponent, LoaderComponent],
   providers: [BsModalService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

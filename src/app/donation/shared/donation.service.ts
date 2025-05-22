@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
+import DonationStatistic from './donation-statistic.model';
 import Donation from './donation.model';
 
 @Injectable({
@@ -34,5 +35,9 @@ export class DonationService {
 
   deleteDonation(donationId: number) {
     return this.httpClient.delete(`${this.baseUrl}/${donationId}`);
+  }
+
+  getStatistic() {
+    return this.httpClient.get<DonationStatistic>(`${this.baseUrl}/statistic`);
   }
 }

@@ -13,7 +13,12 @@
 
       <ul class="nav">
         <li class="nav-item">
-          <a class="nav-link link-secondary" aria-current="page" routerLink="/"
+          <a
+            class="nav-link link-dark"
+            aria-current="page"
+            routerLink=""
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
             >Donations</a
           >
         </li>
@@ -21,7 +26,13 @@
           <a class="nav-link link-dark" routerLink="/wallet">Wallet</a>
         </li> -->
         <li class="nav-item">
-          <a class="nav-link link-dark" routerLink="/container">Containers</a>
+          <a
+            class="nav-link link-dark"
+            routerLink="/container"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Containers</a
+          >
         </li>
       </ul>
 

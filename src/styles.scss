@@ -33,6 +33,10 @@ header,
   min-height: 100px;
 }
 
+.nav-link.active {
+  font-weight: 500;
+}
+
 .user-card {
   border-radius: 10px;
   padding: 15px 20px 20px 20px;
@@ -263,3 +267,85 @@ header,
 }
 
 /* End of tooltip*/
+
+/* Header Widget */
+
+.header-widget {
+  border: var(--theme-color) solid;
+  width: auto;
+}
+/* End of Header Widget */
+
+/* dashboard widget */
+.dashboard-widget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 20px;
+  border-radius: 10px;
+  margin: 10px 0;
+}
+
+.dashboard-widget-info span {
+  font-weight: 500;
+}
+
+.dashboard-widget-info h1 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.dashboard-widget-icon {
+  width: 65px;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  border-radius: 50px;
+}
+
+.dashboard-widget.color-1 {
+  background: rgba(168, 85, 247, 0.08);
+  color: #a855f7;
+}
+
+.dashboard-widget.color-1 h1 {
+  color: #a855f7;
+}
+
+.dashboard-widget.color-1 .dashboard-widget-icon {
+  background: #a855f7;
+  color: #fff;
+}
+
+.dashboard-widget.color-2 {
+  background: rgba(17, 183, 107, 0.08);
+  color: #11b76b;
+}
+
+.dashboard-widget.color-2 h1 {
+  color: #11b76b;
+}
+
+.dashboard-widget.color-2 .dashboard-widget-icon {
+  background: #11b76b;
+  color: #fff;
+}
+
+.dashboard-widget.color-3 {
+  background: rgba(240, 84, 84, 0.08);
+  color: #f05454;
+}
+
+.dashboard-widget.color-3 h1 {
+  color: #f05454;
+}
+
+.dashboard-widget.color-3 .dashboard-widget-icon {
+  background: #f05454;
+  color: #fff;
+}
+
+/* End of dashboard widget */

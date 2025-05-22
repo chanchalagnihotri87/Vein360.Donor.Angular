@@ -11,6 +11,7 @@ import { BreadcrumbItem } from '../breadcrumb/shared/breadcrumb-item.model';
 import { BreadcrumbService } from '../breadcrumb/shared/breadcrumb.service';
 import DonationContainer from '../container/shared/donation-container.model';
 import { DonationContainerService } from '../container/shared/donation-container.service';
+import DonationStatistic from './shared/donation-statistic.model';
 import Donation from './shared/donation.model';
 import { DonationService } from './shared/donation.service';
 import Product from './shared/product.model';
@@ -20,6 +21,7 @@ import { ProductService } from './shared/product.service';
   selector: 'app-donation',
   imports: [ReactiveFormsModule, DonationListComponent],
   templateUrl: './donation.component.html',
+  styleUrl: './donation.component.scss',
 })
 export class DonationComponent implements OnInit {
   private donationModalRef?: BsModalRef;
@@ -28,6 +30,7 @@ export class DonationComponent implements OnInit {
   private donationContainers: DonationContainer[] = [];
 
   protected donations: Donation[] = [];
+  public donationStatistic?: DonationStatistic;
 
   constructor(
     private modalService: BsModalService,
@@ -42,6 +45,7 @@ export class DonationComponent implements OnInit {
     this.loadDonations();
     this.loadContainers();
     this.setBreadcrumb();
+    this.loadStatistic();
   }
 
   //#region Add Donation
@@ -70,6 +74,7 @@ export class DonationComponent implements OnInit {
   handleAddDonation(dontaion: Donation) {
     this.donationService.addDonation(dontaion).subscribe(() => {
       this.loadDonations();
+      this.loadStatistic();
     });
   }
 
@@ -121,6 +126,7 @@ export class DonationComponent implements OnInit {
     this.confirmationModalRef.content.onYes.subscribe(() => {
       this.donationService.deleteDonation(dontationId).subscribe(() => {
         this.loadDonations();
+        this.loadStatistic();
       });
 
       this.hideConfirmationModal();
@@ -160,6 +166,12 @@ export class DonationComponent implements OnInit {
     this.productService.getProducts().subscribe((products) => {
       console.log(products);
       this.products = products;
+    });
+  }
+
+  private loadStatistic() {
+    this.donationService.getStatistic().subscribe((statistic) => {
+      this.donationStatistic = statistic;
     });
   }
 
