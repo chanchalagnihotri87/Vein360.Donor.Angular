@@ -40,4 +40,8 @@ export default class FedexService {
   public get FedexPacks(): FedexPack[] {
     return [...this.fedexPacks];
   }
+
+  public GetFedexPackDescription(fedexPackId: number) {
+    return this.fedexPacks.find((x) => x.id == fedexPackId);
+  }
 }

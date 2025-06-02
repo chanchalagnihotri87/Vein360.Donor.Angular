@@ -4,10 +4,12 @@
       <tr>
         <th>#Id</th>
         <th>Container Type</th>
-        <th>Container Code</th>
-        <th>Tracking Number</th>
+        <th>Clinic</th>
         <th>Status</th>
+        <th>Requested Units</th>
+        <th>Approved Units</th>
         <th>Date</th>
+
         <th>Action</th>
       </tr>
     </thead>
@@ -18,8 +20,9 @@
           <span class="table-list-code"> {{ container.id }} </span>
         </td>
         <td>{{ container.containerType!.name }}</td>
-        <td>{{ container.container?.containerCode }}</td>
-        <td>{{ container.trackingNumber }}</td>
+        <td>
+          {{ container.clinic?.clinicCode }}
+        </td>
         <td>
           @switch (container.status) { @case (ContainerStatus.Requested) {
           <span class="badge badge-primary">Requested</span>
@@ -34,8 +37,15 @@
           }}
         </td>
         <td>
+          {{ container.requestedUnits }}
+        </td>
+        <td>
+          {{ container.approvedUnits }}
+        </td>
+        <td>
           {{ container.createdDate | date : "mediumDate" }}
         </td>
+
         <td>
           @if(container.status==ContainerStatus.Requested){
           <button

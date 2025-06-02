@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
+import ListItem from './list-tem.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LabelService {
-  private readonly baseUrl = `${environment.apiUrl}/labels`;
+export class ClinicService {
+  private readonly baseUrl = `${environment.apiUrl}/clinics`;
 
   constructor(private httpClient: HttpClient) {}
 
-  getLabels(clinicId: number) {
-    return this.httpClient.get<string[]>(`${this.baseUrl}/list/${clinicId}`);
+  getClinicsList() {
+    return this.httpClient.get<ListItem[]>(`${this.baseUrl}/list`);
   }
 }

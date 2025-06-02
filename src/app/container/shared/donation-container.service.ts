@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import ContainerRequest from './container-request.model';
 import DonationContainer from './donation-container.model';
 
 @Injectable({
@@ -22,8 +23,8 @@ export class DonationContainerService {
     );
   }
 
-  requestForContainer(containerTypeId: number) {
-    return this.httpClient.post(`${this.baseUrl}/${containerTypeId}`, {});
+  requestForContainer(containerRequest: ContainerRequest) {
+    return this.httpClient.post(this.baseUrl, containerRequest);
   }
 
   deleteContainer(donationContainerId: number) {

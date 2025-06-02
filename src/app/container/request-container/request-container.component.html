@@ -1,6 +1,6 @@
 <form [formGroup]="containerForm" (ngSubmit)="submitForm()" #form="ngForm">
   <div class="modal-header">
-    <h5 class="modal-title" id="donationModalLabel">Request for a Container</h5>
+    <h5 class="modal-title" id="donationModalLabel">Request Container(s)</h5>
     <button
       type="button"
       class="btn-close"
@@ -28,6 +28,41 @@
 
         <app-validation-message
           fieldName="containerType"
+          [formGroup]="containerForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label for="units" class="form-label">Units</label>
+        <input
+          type="number"
+          formControlName="units"
+          min="1"
+          step="1"
+          class="form-control"
+          oninput="validity.valid || (value='');"
+        />
+
+        <app-validation-message
+          fieldName="units"
+          [formGroup]="containerForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-12">
+        <label for="clinicId" class="form-label">Clinic</label>
+        <select formControlName="clinicId" class="form-select">
+          @for (clinic of clinics; track clinic.id) {
+          <option [value]="clinic.id">{{ clinic.name }}</option>
+          }
+        </select>
+
+        <app-validation-message
+          fieldName="clinicId"
           [formGroup]="containerForm"
           [ngFormTemplate]="form"
         ></app-validation-message>

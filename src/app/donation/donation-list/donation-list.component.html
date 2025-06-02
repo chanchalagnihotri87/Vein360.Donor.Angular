@@ -20,6 +20,7 @@
         <td>{{ donation.productTypes.join(", ") }}</td>
         <td>{{ donation.trackingNumber }}</td>
         <td>
+          @if(donation.labelFileName){
           <button
             type="button"
             class="btn-link-download btn-link"
@@ -28,6 +29,7 @@
           >
             <i class="fa fa-download"></i>
           </button>
+          }
         </td>
         <td>
           @switch(donation.status) { @case (DonationStatus.Donated) {

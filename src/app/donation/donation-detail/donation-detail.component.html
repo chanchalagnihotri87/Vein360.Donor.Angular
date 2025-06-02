@@ -11,99 +11,74 @@
 
 <div class="modal-body">
   <div class="row mb-3">
+    <!-- Clinic -->
     <div class="col-md-4">
-      <label for="container-type" class="form-label">Container Type</label>
-      <select
-        class="form-select"
-        id="containerType"
-        name="containerType"
-        formControlName="containerType"
+      <label for="clinicId" class="form-label"> Clinic</label>
+      <input
+        class="form-control"
+        [value]="donation?.clinic?.clinicCode"
         disabled
-        [value]="donation?.containerType"
-      >
-        <option value="">Select Container Type</option>
-        <option value="1">Vein360 Container</option>
-        <option value="2">Fedex Container</option>
-        <option value="3">Own Custom Packing</option>
-      </select>
+      />
     </div>
-    @if(donation?.containerType!=ContainerType.OwnCustomPacking){
 
+    <!-- Package Type -->
     <div class="col-md-4">
-      <label for="container" class="form-label">{{
-        donation?.containerType == ContainerType.Vein360Container
-          ? "Container"
-          : "Packing Type"
-      }}</label>
-      <select
-        class="form-select"
-        id="container"
-        formControlName="container"
-        [value]="donation?.containerId"
+      <label for="container-type" class="form-label">Package Type</label>
+      <input
+        class="form-control"
         disabled
-      >
-        @for(container of associatedContainers; track container.id){
-        <option
-          [value]="container.id"
-          [selected]="container.id == donation!.containerId"
-        >
-          {{ container.name }}
-        </option>
-        }
-      </select>
+        [value]="GetPackageTypeDescription(donation?.packageType)"
+      />
     </div>
-    } @if(donation?.containerType==ContainerType.OwnCustomPacking) {
 
+    <!-- Container Type -->
+    @if(donation?.packageType ==ContainerType.Vein360Container){
     <div class="col-md-4">
-      <div class="row">
-        <div class="col-md-4">
-          <label for="length" class="form-label">Length "</label>
-          <input
-            type="number"
-            class="form-control length-control"
-            id="length"
-            disabled
-            [value]="donation?.length"
-          />
-        </div>
-
-        <div class="col-md-4">
-          <label for="width" class="form-label">Width "</label>
-          <input
-            type="number"
-            class="form-control length-control"
-            id="Width"
-            disabled
-            [value]="donation?.width"
-          />
-        </div>
-
-        <div class="col-md-4">
-          <label for="height" class="form-label">Height "</label>
-          <input
-            type="number"
-            class="form-control length-control"
-            id="height"
-            disabled
-            [value]="donation?.height"
-          />
-        </div>
-      </div>
+      <label for="container" class="form-label"> Container</label>
+      <input
+        class="form-control"
+        [value]="donation?.containerType?.name"
+        disabled
+      />
     </div>
     }
 
-    <div class="col-md-2">
-      <label for="weight" class="form-label">Tracking No.</label>
+    <!-- Fedex Package Type -->
+    @if(donation?.packageType ==ContainerType.FedexPackage){
+    <div class="col-md-4">
+      <label for="fedexPackageTypeId" class="form-label"> Fedex Package</label>
       <input
-        type="number"
         class="form-control"
-        id="trackingNumber"
-        formControlName="trackingNumber"
+        [value]="GetFedexPackageDescription(donation?.fedexPackagingTypeId)"
         disabled
+      />
+    </div>
+    }
+  </div>
+
+  <div class="row mb-3 gy-3">
+    <div class="col-md-4">
+      @if(donation?.useOldLabel){
+      <div class="form-check">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          [checked]="donation?.useOldLabel"
+          disabled
+        />
+        <label class="form-check-label">Use Old Label</label>
+      </div>
+      } @else{
+      <label>Tracking Number</label>
+      }
+      <input
+        class="form-control mt-1"
         [value]="donation?.trackingNumber"
+        disabled
       />
     </div>
   </div>
+
   <div class="row pb-2 mt-5 mb-3 border-bottom">
     <div class="col-md-12">
       <span class="fw-bold">Products</span>
@@ -166,11 +141,54 @@
       <div class="col-md-1">
         <input
           type="number"
-          class="form-control"
+          class="form-control pe-0"
           [value]="donationProduct.rejected"
           disabled
         />
       </div>
+
+      @if(donationProduct.rejected){
+      <div class="col-md-1 pt-2 ps-0">
+        <button
+          type="button"
+          class="btn-link btn-link-icon"
+          [popover]="popOverTemplate"
+          popoverTitle="Rejection Detail"
+          triggers="mouseenter: mouseleave"
+        >
+          <i class="fa fa-info-circle"></i>
+        </button>
+        <ng-template #popOverTemplate>
+          @if(donationProduct.rejectedClogged){
+          <p class="my-1">
+            <span class="fw-bold me-1">Clogged :</span>
+            {{ donationProduct.rejectedClogged }}
+          </p>
+          } @if(donationProduct.rejectedDamaged){
+          <p class="my-1">
+            <span class="fw-bold me-1 popover-label">Damaged :</span>
+            {{ donationProduct.rejectedDamaged }}
+          </p>
+
+          } @if(donationProduct.rejectedFunction){
+          <p class="my-1">
+            <span class="fw-bold me-1 popover-label">Function :</span>
+            {{ donationProduct.rejectedFunction }}
+          </p>
+          } @if(donationProduct.rejectedKinked){
+          <p class="my-1">
+            <span class="fw-bold me-1 popover-label">Kinked :</span>
+            {{ donationProduct.rejectedKinked }}
+          </p>
+          } @if(donationProduct.rejectedOther){
+          <p class="my-1">
+            <span class="fw-bold me-1 popover-label">Other :</span>
+            {{ donationProduct.rejectedOther }}
+          </p>
+          }
+        </ng-template>
+      </div>
+      }
     </div>
     }
   </ng-container>

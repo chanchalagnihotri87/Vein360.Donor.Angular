@@ -4,52 +4,60 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 
-import ContainerListItem from '../../container/shared/container-list-item-model';
+import ConversionHelper from '../../../common/conversion-helpter';
+import ContainerType from '../../container/shared/container-type.model';
 import DonationContainer from '../../container/shared/donation-container.model';
 import { DonationContainerService } from '../../container/shared/donation-container.service';
-import { ContainerType } from '../../shared/enums/container-type.enum';
+import { PackageType } from '../../shared/enums/package-type.enum';
 import { ValidationMessageComponent } from '../../shared/validation-message/validation-message.component';
 import DonationProduct from '../shared/donation-product.model';
 import Donation from '../shared/donation.model';
 import FedexService from '../shared/fedex.service';
+import { LabelService } from '../shared/label.service';
+import ListItem from '../shared/list-tem.model';
 import Product from '../shared/product.model';
 
 @Component({
   selector: 'app-add',
-  imports: [ReactiveFormsModule, ValidationMessageComponent],
+  imports: [ReactiveFormsModule, FormsModule, ValidationMessageComponent],
   templateUrl: './add-donation.component.html',
-  styleUrl: './add-donation.component.scss',
 })
 export class AddDonationComponent implements OnInit {
   @Input({ required: true }) products: Product[] = [];
+  @Input({ required: true }) containerTypes: ContainerType[] = [];
+  @Input({ required: true }) clinics: ListItem[] = [];
+  @Input({ required: true }) defaultClinicId: number = 0;
 
   public onSubmit = output<Donation>();
   public onClose = output();
 
   public containers: DonationContainer[] = [];
-  public length?: number;
-  public width?: number;
-  public height?: number;
-  public selectedContainerType: string;
+  public trackingNumbers: string[] = [];
+  public useOldLabel: boolean = false;
+  public selectedPackageType: string;
   public donationForm: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
     private fedexPackService: FedexService,
-    private dontainerContainerService: DonationContainerService
+    private dontainerContainerService: DonationContainerService,
+    private labelService: LabelService
   ) {
     this.donationForm = this.createDonationForm();
-    this.selectedContainerType = ContainerType.OwnCustomPacking.toString();
+    this.selectedPackageType = PackageType.CustomPackage.toString();
   }
 
   ngOnInit(): void {
     this.setDefaultValuesInFormControls();
-    this.subscribeToContainerTypeChange();
+    this.subscribeToPackageTypeChange();
     this.loadDonationContainers();
+    this.loadDefaultValuesInForm();
+    this.loadTrackingNumbers(this.defaultClinicId);
   }
 
   //#region  Public Methods
@@ -57,24 +65,22 @@ export class AddDonationComponent implements OnInit {
   public submitForm() {
     if (this.donationForm.valid) {
       const newDonation = new Donation(
-        this.donationForm.value.containerType,
-        this.donationForm.value.container != ''
-          ? this.donationForm.value.container
-          : null,
+        this.donationForm.value.clinicId,
+        this.donationForm.value.packageType,
         this.donationForm.value.products.map(
           (productItem: { product: number; units: number }) => {
             return new DonationProduct(productItem.product, productItem.units);
           }
         ),
-        this.selectedContainerType == ContainerType.OwnCustomPacking.toString()
-          ? this.donationForm.value.length
-          : undefined,
-        this.selectedContainerType == ContainerType.OwnCustomPacking.toString()
-          ? this.donationForm.value.width
-          : undefined,
-        this.selectedContainerType == ContainerType.OwnCustomPacking.toString()
-          ? this.donationForm.value.height
-          : undefined
+        this.donationForm.value.containerTypeId == ''
+          ? undefined
+          : this.donationForm.value.containerTypeId,
+        this.donationForm.value.fedexPackageTypeId == ''
+          ? undefined
+          : this.donationForm.value.fedexPackageTypeId,
+        this.donationForm.value.trackingNumber == ''
+          ? undefined
+          : this.donationForm.value.trackingNumber
       );
 
       this.onSubmit.emit(newDonation);
@@ -91,12 +97,28 @@ export class AddDonationComponent implements OnInit {
     );
   }
 
-  public containerTypeChanged() {
-    (this.donationForm.get('container') as FormControl)?.setValue(''); // Set
+  public packageTypeChanged() {
+    this.containerTypeIdFormControl.setValue('');
+    this.fedexPackageTypeIdFormControl.setValue('');
+  }
+
+  public clinicSelectionChanged(event: Event) {
+    let clinicId = ConversionHelper.convertToInt(
+      (event.currentTarget as HTMLSelectElement).value
+    );
+
+    this.loadTrackingNumbers(clinicId);
+    this.trackingNumberFormControl.setValue('');
   }
 
   public closeModal() {
     this.onClose.emit();
+  }
+
+  public useOldLabelSelectionChanged() {
+    this.useOldLabel = !this.useOldLabel;
+
+    this.updateTrackingNumberValidations();
   }
 
   //#endregion
@@ -104,57 +126,23 @@ export class AddDonationComponent implements OnInit {
   //#region Get Properties
 
   get ContainerType() {
-    return ContainerType;
+    return PackageType;
   }
 
   get fedexPacks() {
     return this.fedexPackService.FedexPacks;
   }
 
-  get associatedContainers(): ContainerListItem[] {
-    if (this.selectedContainerType === '') {
-      return [];
-    }
-
-    if (
-      this.selectedContainerType === ContainerType.FedexContainer.toString()
-    ) {
-      return this.fedexPacks.map(
-        (pack) => new ContainerListItem(pack.id, pack.description)
-      );
-    }
-
-    return this.containers.map(
-      (item) =>
-        new ContainerListItem(
-          item.id,
-          `#${item.id} ${item.containerType?.name} ${
-            item.container?.containerCode
-              ? `[${item.container?.containerCode}]`
-              : ''
-          }`
-        )
-    );
+  get containerTypeIdFormControl() {
+    return this.donationForm.get('containerTypeId') as FormControl;
   }
 
-  get containerTypeFormControl() {
-    return this.donationForm.get('containerType') as FormControl;
+  get fedexPackageTypeIdFormControl() {
+    return this.donationForm.get('fedexPackageTypeId') as FormControl;
   }
 
-  get containerFormControl() {
-    return this.donationForm.get('container') as FormControl;
-  }
-
-  get lengthFormControl() {
-    return this.donationForm.get('length') as FormControl;
-  }
-
-  get widhtFormControl() {
-    return this.donationForm.get('width') as FormControl;
-  }
-
-  get heightFormControl() {
-    return this.donationForm.get('height') as FormControl;
+  get trackingNumberFormControl() {
+    return this.donationForm.get('trackingNumber') as FormControl;
   }
 
   get productFormControls() {
@@ -167,13 +155,11 @@ export class AddDonationComponent implements OnInit {
 
   private createDonationForm() {
     return this.formBuilder.group({
-      containerType: ['', Validators.required],
-      container: ['', Validators.required],
-      // weight: ['', Validators.required],
-      weight: [''],
-      length: ['', Validators.required],
-      width: ['', Validators.required],
-      height: ['', Validators.required],
+      clinicId: ['', Validators.required],
+      packageType: ['', Validators.required],
+      containerTypeId: [''],
+      fedexPackageTypeId: [''],
+      trackingNumber: [''],
 
       products: this.formBuilder.array([
         this.formBuilder.group({
@@ -200,37 +186,41 @@ export class AddDonationComponent implements OnInit {
       ?.setValue('');
   }
 
-  private subscribeToContainerTypeChange() {
-    this.donationForm.get('containerType')?.valueChanges.subscribe((val) => {
-      this.updateContainerValidations(val);
-      this.updateDimentionValidations(val);
+  private subscribeToPackageTypeChange() {
+    this.donationForm.get('packageType')?.valueChanges.subscribe((val) => {
+      this.updateContainerAndFedexPackagingValidations(val);
     });
   }
 
-  private updateContainerValidations(containerType: string) {
-    if (containerType == ContainerType.OwnCustomPacking.toString()) {
-      this.containerFormControl.clearValidators();
-    } else {
-      this.containerFormControl.setValidators([Validators.required]);
+  private updateContainerAndFedexPackagingValidations(packageType: string) {
+    switch (packageType) {
+      case PackageType.Vein360Container.toString():
+        this.containerTypeIdFormControl.setValidators([Validators.required]);
+        this.fedexPackageTypeIdFormControl.clearValidators();
+        break;
+
+      case PackageType.FedexPackage.toString():
+        this.fedexPackageTypeIdFormControl.setValidators([Validators.required]);
+        this.containerTypeIdFormControl.clearValidators();
+        break;
+      default:
+        this.containerTypeIdFormControl.clearValidators();
+        this.fedexPackageTypeIdFormControl.clearValidators();
+        break;
     }
 
-    this.containerFormControl.updateValueAndValidity();
+    this.containerTypeIdFormControl.updateValueAndValidity();
+    this.fedexPackageTypeIdFormControl.updateValueAndValidity();
   }
 
-  private updateDimentionValidations(containerType: string) {
-    if (containerType == ContainerType.OwnCustomPacking.toString()) {
-      this.lengthFormControl.setValidators([Validators.required]);
-      this.widhtFormControl.setValidators([Validators.required]);
-      this.heightFormControl.setValidators([Validators.required]);
+  private updateTrackingNumberValidations() {
+    if (this.useOldLabel) {
+      this.trackingNumberFormControl.setValidators([Validators.required]);
     } else {
-      this.lengthFormControl.clearValidators();
-      this.widhtFormControl.clearValidators();
-      this.heightFormControl.clearValidators();
+      this.trackingNumberFormControl.clearValidators();
     }
 
-    this.lengthFormControl.updateValueAndValidity();
-    this.widhtFormControl.updateValueAndValidity();
-    this.heightFormControl.updateValueAndValidity();
+    this.trackingNumberFormControl.updateValueAndValidity();
   }
 
   private loadDonationContainers() {
@@ -239,6 +229,24 @@ export class AddDonationComponent implements OnInit {
       .subscribe((containers) => {
         this.containers = containers;
       });
+  }
+
+  private loadTrackingNumbers(clinicId: number) {
+    if (clinicId) {
+      this.labelService.getLabels(clinicId).subscribe((labels) => {
+        this.trackingNumbers = labels;
+      });
+
+      return;
+    }
+
+    this.trackingNumbers = [];
+  }
+
+  private loadDefaultValuesInForm() {
+    this.donationForm.patchValue({
+      clinicId: this.defaultClinicId,
+    });
   }
   //#endregion
 }

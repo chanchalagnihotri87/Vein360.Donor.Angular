@@ -3,8 +3,8 @@ import { Component, input, output } from '@angular/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import ConversionHelper from '../../../common/conversion-helpter';
 import { DonationStatus } from '../../shared/enums/dontainer-status.enum';
+import { DocumentService } from '../shared/document.service';
 import Donation from '../shared/donation.model';
-import { LabelService } from '../shared/label.service';
 
 @Component({
   selector: 'app-donation-list',
@@ -18,7 +18,7 @@ export class DonationListComponent {
   onDetailClick = output<number>();
   onDeleteClick = output<number>();
 
-  constructor(private labelService: LabelService) {}
+  constructor(private documentService: DocumentService) {}
 
   public showDetail(donationId: number) {
     this.onDetailClick.emit(donationId);
@@ -29,9 +29,11 @@ export class DonationListComponent {
   }
 
   public downloadLabel(labelFileName: string) {
-    this.labelService.getLabel(labelFileName).subscribe((labelData: Blob) => {
-      this.labelService.downloadLabel(labelData, labelFileName);
-    });
+    this.documentService
+      .getLabel(labelFileName)
+      .subscribe((labelData: Blob) => {
+        this.documentService.downloadLabel(labelData, labelFileName);
+      });
   }
 
   public convertToDate(date: string) {

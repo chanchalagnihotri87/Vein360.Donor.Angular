@@ -12,130 +12,125 @@
   <!-- Modal Body -->
   <div class="modal-body">
     <div class="row mb-3">
-      <!-- Container Type -->
+      <!-- Clinic -->
       <div class="col-md-4">
-        <label for="container-type" class="form-label">Container Type</label>
+        <label for="clinicId" class="form-label"> Clinic</label>
         <select
           class="form-select"
-          id="containerType"
-          name="containerType"
-          formControlName="containerType"
-          [(ngModel)]="selectedContainerType"
-          (change)="containerTypeChanged()"
+          formControlName="clinicId"
+          (change)="clinicSelectionChanged($event)"
         >
-          <!-- <option value="">Select Container Type</option> -->
-          <option [value]="ContainerType.Vein360Container">
-            Vein360 Container
+          @for (clinic of clinics; track clinic.id) {
+          <option [value]="clinic.id" [selected]="defaultClinicId == clinic.id">
+            {{ clinic.name }}
           </option>
-          <option [value]="ContainerType.FedexContainer">
-            Fedex Container
-          </option>
-          <option [value]="ContainerType.OwnCustomPacking">
-            Own Custom Packing
-          </option>
+          }
         </select>
 
         <app-validation-message
-          fieldName="containerType"
+          fieldName="clinicId"
           [formGroup]="donationForm"
           [ngFormTemplate]="form"
         ></app-validation-message>
       </div>
 
-      <!-- Container/Packing Type -->
-      @if(selectedContainerType!=ContainerType.OwnCustomPacking.toString()){
+      <!-- Package Type -->
       <div class="col-md-4">
-        <label for="container" class="form-label">
-          {{
-            selectedContainerType == ContainerType.Vein360Container.toString()
-              ? "Container"
-              : "Packing Type"
-          }}</label
+        <label for="container-type" class="form-label">Package Type</label>
+        <select
+          class="form-select"
+          id="packageType"
+          name="packageType"
+          formControlName="packageType"
+          [(ngModel)]="selectedPackageType"
+          (change)="packageTypeChanged()"
         >
-        <select class="form-select" id="container" formControlName="container">
-          <option value="">
-            Select
-            {{
-              selectedContainerType == ContainerType.Vein360Container.toString()
-                ? "Container"
-                : "Packing Type"
-            }}
+          <option [value]="ContainerType.CustomPackage">Custom Package</option>
+          <option [value]="ContainerType.Vein360Container">
+            Vein360 Container
           </option>
-          @for(container of associatedContainers; track container.id){
-          <option [value]="container.id">
-            {{ container.name }}
+          <option [value]="ContainerType.FedexPackage">Fedex Package</option>
+        </select>
+
+        <app-validation-message
+          fieldName="packageType"
+          [formGroup]="donationForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
+      </div>
+
+      <!-- Container Type -->
+      @if(selectedPackageType ==ContainerType.Vein360Container.toString()){
+      <div class="col-md-4">
+        <label for="container" class="form-label"> Container</label>
+        <select class="form-select" formControlName="containerTypeId">
+          <option value="">Select Container</option>
+          @for(containerType of containerTypes; track containerType.id){
+          <option [value]="containerType.id">
+            {{ containerType.name }}
           </option>
           }
         </select>
         <app-validation-message
-          fieldName="container"
+          fieldName="containerTypeId"
           [formGroup]="donationForm"
           [ngFormTemplate]="form"
         ></app-validation-message>
       </div>
       }
 
-      <!-- Dmimentions Length, Width, Height -->
-      @if(selectedContainerType == ContainerType.OwnCustomPacking.toString()){
+      <!-- Fedex Package Type -->
+      @if(selectedPackageType ==ContainerType.FedexPackage.toString()){
       <div class="col-md-4">
-        <div class="row">
-          <div class="col-md-4">
-            <label for="length" class="form-label">Length "</label>
-            <input
-              type="number"
-              class="form-control length-control"
-              id="length"
-              placeholder=""
-              formControlName="length"
-              [(ngModel)]="length"
-            />
-            <app-validation-message
-              fieldName="length"
-              [formGroup]="donationForm"
-              [ngFormTemplate]="form"
-            ></app-validation-message>
-          </div>
-
-          <div class="col-md-4">
-            <label for="width" class="form-label">Width "</label>
-            <input
-              type="number"
-              class="form-control length-control"
-              id="Width"
-              placeholder=""
-              formControlName="width"
-              [(ngModel)]="width"
-            />
-            <app-validation-message
-              fieldName="width"
-              [formGroup]="donationForm"
-              [ngFormTemplate]="form"
-            ></app-validation-message>
-          </div>
-
-          <div class="col-md-4">
-            <label for="height" class="form-label">Height "</label>
-            <input
-              type="number"
-              class="form-control length-control"
-              id="height"
-              placeholder=""
-              formControlName="height"
-              [(ngModel)]="height"
-            />
-            <app-validation-message
-              fieldName="height"
-              [formGroup]="donationForm"
-              [ngFormTemplate]="form"
-            ></app-validation-message>
-          </div>
-        </div>
+        <label for="fedexPackageTypeId" class="form-label">
+          Fedex Package</label
+        >
+        <select class="form-select" formControlName="fedexPackageTypeId">
+          <option value="">Select Fedex Package</option>
+          @for(fedexPack of fedexPacks; track fedexPack.id){
+          <option [value]="fedexPack.id">
+            {{ fedexPack.description }}
+          </option>
+          }
+        </select>
+        <app-validation-message
+          fieldName="fedexPackageTypeId"
+          [formGroup]="donationForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
       </div>
       }
     </div>
 
+    <div class="row mb-3 gy-3">
+      <div class="col-md-4">
+        <div class="form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            name="useOldLabel"
+            (change)="useOldLabelSelectionChanged()"
+          />
+          <label class="form-check-label">Use Old Label</label>
+        </div>
+        @if(useOldLabel){
+        <select class="form-select mt-1" formControlName="trackingNumber">
+          <option value="">Select Tracking Number</option>
+          @for (trackingNumber of trackingNumbers; track trackingNumber) {
+          <option [value]="trackingNumber">{{ trackingNumber }}</option>
+          }
+        </select>
+        <app-validation-message
+          fieldName="trackingNumber"
+          [formGroup]="donationForm"
+          [ngFormTemplate]="form"
+        ></app-validation-message>
+        }
+      </div>
+    </div>
+
     <!-- Products -->
-    <div class="row pb-2 mt-5 mb-3 border-bottom">
+    <div class="row pb-2 mt-3 mb-3 border-bottom">
       <div class="col-md-12">
         <span class="fw-bold">Products</span>
       </div>

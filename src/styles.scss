@@ -126,7 +126,8 @@ header,
   }
 }
 
-.table .btn-link-download {
+.table .btn-link-download,
+.btn-link-icon {
   color: var(--bs-table-color);
   background: transparent;
   border: none;
@@ -349,3 +350,7 @@ header,
 }
 
 /* End of dashboard widget */
+
+.popover-label {
+  width: 50px;
+}

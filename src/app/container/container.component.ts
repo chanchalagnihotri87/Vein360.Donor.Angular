@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { BreadcrumbService } from '../breadcrumb/shared/breadcrumb.service';
+import { ClinicService } from '../donation/shared/clinic.service';
+import ListItem from '../donation/shared/list-tem.model';
 import { ConfirmationMessageComponent } from '../shared/confirmation-modal/confirmation-modal.component';
 import { ContainerListComponent } from './container-list/container-list.component';
-import { RequestForContainerComponent } from './request-for-container/request-for-container.component';
+import { RequestContainerComponent } from './request-container/request-container.component';
+import ContainerRequest from './shared/container-request.model';
 import ContainerType from './shared/container-type.model';
 import { ContatinerTypeService } from './shared/contatiner-type.service';
 import DonationContainer from './shared/donation-container.model';
@@ -20,6 +23,8 @@ export class ContainerComponent implements OnInit {
   protected containers: DonationContainer[] = [];
   protected containerTypes: ContainerType[] = [];
 
+  private clinics: ListItem[] = [];
+
   private modelRef?: BsModalRef;
   private confirmationModalRef?: BsModalRef;
 
@@ -27,13 +32,15 @@ export class ContainerComponent implements OnInit {
     private modalService: BsModalService,
     private breadcrumbService: BreadcrumbService,
     private containerTypeService: ContatinerTypeService,
-    private donationContainerService: DonationContainerService
+    private donationContainerService: DonationContainerService,
+    private clinicService: ClinicService
   ) {}
 
   ngOnInit(): void {
     this.setBereadcrumb();
     this.loadContainerTypes();
     this.loadDonationContainers();
+    this.loadClinics();
   }
 
   //#region  Protected Methods
@@ -41,10 +48,14 @@ export class ContainerComponent implements OnInit {
   protected showRequestContainerModal() {
     const initialState: ModalOptions = {
       class: 'modal-md',
-      initialState: { containerTypes: this.containerTypes },
+      initialState: {
+        containerTypes: this.containerTypes,
+        clinics: this.clinics,
+        defaultClinicId: 1,
+      },
     };
     this.modelRef = this.modalService.show(
-      RequestForContainerComponent,
+      RequestContainerComponent,
       initialState
     );
 
@@ -52,10 +63,12 @@ export class ContainerComponent implements OnInit {
       this.closeModal();
     });
 
-    this.modelRef.content.onSubmit.subscribe((containerTypeId: number) => {
-      this.handleRequestForContainer(containerTypeId);
-      this.closeModal();
-    });
+    this.modelRef.content.onSubmit.subscribe(
+      (containerRequest: ContainerRequest) => {
+        this.handleRequestForContainer(containerRequest);
+        this.closeModal();
+      }
+    );
   }
 
   protected handleDeleteContainer(donationContainerId: number) {
@@ -116,9 +129,9 @@ export class ContainerComponent implements OnInit {
     });
   }
 
-  private handleRequestForContainer(containerTypeId: number) {
+  private handleRequestForContainer(containerRequest: ContainerRequest) {
     this.donationContainerService
-      .requestForContainer(containerTypeId)
+      .requestForContainer(containerRequest)
       .subscribe(() => {
         this.loadDonationContainers();
       });
@@ -130,6 +143,12 @@ export class ContainerComponent implements OnInit {
 
   private hideConfirmationModal() {
     this.confirmationModalRef?.hide();
+  }
+
+  private loadClinics() {
+    this.clinicService.getClinicsList().subscribe((clinics) => {
+      this.clinics = clinics;
+    });
   }
 
   //#endregion

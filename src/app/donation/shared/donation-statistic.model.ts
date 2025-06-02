@@ -1,7 +1,3 @@
 export default class DonationStatistic {
-  constructor(
-    public totalProducts: number,
-    public acceptedProducts: number,
-    public rejectedProducts: number
-  ) {}
+  constructor(public totalProducts: number, public totalEarning: number) {}
 }

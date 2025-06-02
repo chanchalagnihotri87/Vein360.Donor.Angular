@@ -22,11 +22,11 @@ export class DonationService {
 
   addDonation(donation: Donation) {
     let donationData = {
-      containerType: donation.containerType,
-      containerId: donation.containerId,
-      length: donation.length,
-      width: donation.width,
-      height: donation.height,
+      clinicId: donation.clinicId,
+      packageType: donation.packageType,
+      containerTypeId: donation.containerTypeId,
+      fedexPackagingTypeId: donation.fedexPackagingTypeId,
+      trackingNumber: donation.trackingNumber,
       products: donation.products.map((product) => product),
     };
 

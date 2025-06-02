@@ -7,19 +7,24 @@ import { AddDonationComponent } from './add-donation/add-donation.component';
 import { DonationDetailComponent } from './donation-detail/donation-detail.component';
 import { DonationListComponent } from './donation-list/donation-list.component';
 
+import { CurrencyPipe } from '@angular/common';
 import { BreadcrumbItem } from '../breadcrumb/shared/breadcrumb-item.model';
 import { BreadcrumbService } from '../breadcrumb/shared/breadcrumb.service';
+import ContainerType from '../container/shared/container-type.model';
+import { ContatinerTypeService } from '../container/shared/contatiner-type.service';
 import DonationContainer from '../container/shared/donation-container.model';
 import { DonationContainerService } from '../container/shared/donation-container.service';
+import { ClinicService } from './shared/clinic.service';
 import DonationStatistic from './shared/donation-statistic.model';
 import Donation from './shared/donation.model';
 import { DonationService } from './shared/donation.service';
+import ListItem from './shared/list-tem.model';
 import Product from './shared/product.model';
 import { ProductService } from './shared/product.service';
 
 @Component({
   selector: 'app-donation',
-  imports: [ReactiveFormsModule, DonationListComponent],
+  imports: [ReactiveFormsModule, DonationListComponent, CurrencyPipe],
   templateUrl: './donation.component.html',
   styleUrl: './donation.component.scss',
 })
@@ -28,6 +33,8 @@ export class DonationComponent implements OnInit {
   private confirmationModalRef?: BsModalRef;
   private products: Product[] = [];
   private donationContainers: DonationContainer[] = [];
+  private containerTypes: ContainerType[] = [];
+  private clinics: ListItem[] = [];
 
   protected donations: Donation[] = [];
   public donationStatistic?: DonationStatistic;
@@ -37,7 +44,9 @@ export class DonationComponent implements OnInit {
     private donationService: DonationService,
     private productService: ProductService,
     private containerService: DonationContainerService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private containerTypeService: ContatinerTypeService,
+    private clinicService: ClinicService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +55,8 @@ export class DonationComponent implements OnInit {
     this.loadContainers();
     this.setBreadcrumb();
     this.loadStatistic();
+    this.loadContainerTypes();
+    this.loadClinics();
   }
 
   //#region Add Donation
@@ -55,6 +66,9 @@ export class DonationComponent implements OnInit {
       class: 'modal-xl',
       initialState: {
         products: this.products,
+        containerTypes: this.containerTypes,
+        clinics: this.clinics,
+        defaultClinicId: 1,
       },
     };
     this.donationModalRef = this.modalService.show(
@@ -91,7 +105,7 @@ export class DonationComponent implements OnInit {
   private showDonationDetailModal(donation: Donation) {
     const configuartions: ModalOptions = {
       initialState: {
-        donation: donation,
+        donation,
         products: this.products,
         containers: this.donationContainers,
       },
@@ -181,6 +195,20 @@ export class DonationComponent implements OnInit {
 
   private hideConfirmationModal() {
     this.confirmationModalRef?.hide();
+  }
+
+  private loadContainerTypes() {
+    this.containerTypeService
+      .getContainerTypes()
+      .subscribe((containerTypes) => {
+        this.containerTypes = containerTypes;
+      });
+  }
+
+  private loadClinics() {
+    this.clinicService.getClinicsList().subscribe((clinics) => {
+      this.clinics = clinics;
+    });
   }
 
   //#endregion
