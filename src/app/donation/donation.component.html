@@ -8,6 +8,7 @@
       <!-- Donation Stats -->
       <div class="col-md-8">
         <div class="row justify-content-center">
+          @if(donationStatistic?.totalProducts) {
           <div class="col-auto">
             <div class="dashboard-widget color-1">
               <div class="dashboard-widget-info">
@@ -19,6 +20,7 @@
               </div>
             </div>
           </div>
+          } @if(donationStatistic?.totalEarning) {
           <div class="col-auto">
             <div class="dashboard-widget color-2">
               <div class="dashboard-widget-info">
@@ -30,6 +32,7 @@
               </div>
             </div>
           </div>
+          }
         </div>
       </div>
 
