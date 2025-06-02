@@ -34,6 +34,8 @@
         <td>
           @switch(donation.status) { @case (DonationStatus.Donated) {
           <span class="badge badge-primary">Donated</span>
+          } @case (DonationStatus.Received) {
+          <span class="badge badge-secondary">Received</span>
           } @case (DonationStatus.Processed) {
           <span class="badge badge-success">Processed</span>
           } @case (DonationStatus.Paid) {
