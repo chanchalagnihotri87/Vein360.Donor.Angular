@@ -51,7 +51,6 @@ export class ContainerComponent implements OnInit {
       initialState: {
         containerTypes: this.containerTypes,
         clinics: this.clinics,
-        defaultClinicId: 1,
       },
     };
     this.modelRef = this.modalService.show(

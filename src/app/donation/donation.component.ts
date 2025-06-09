@@ -68,7 +68,6 @@ export class DonationComponent implements OnInit {
         products: this.products,
         containerTypes: this.containerTypes,
         clinics: this.clinics,
-        defaultClinicId: 1,
       },
     };
     this.donationModalRef = this.modalService.show(

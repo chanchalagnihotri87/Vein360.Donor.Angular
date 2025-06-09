@@ -13,6 +13,7 @@ import ConversionHelper from '../../../common/conversion-helpter';
 import ContainerType from '../../container/shared/container-type.model';
 import DonationContainer from '../../container/shared/donation-container.model';
 import { DonationContainerService } from '../../container/shared/donation-container.service';
+import { UserInfoService } from '../../login/shared/user-info.service';
 import { PackageType } from '../../shared/enums/package-type.enum';
 import { ValidationMessageComponent } from '../../shared/validation-message/validation-message.component';
 import DonationProduct from '../shared/donation-product.model';
@@ -31,7 +32,7 @@ export class AddDonationComponent implements OnInit {
   @Input({ required: true }) products: Product[] = [];
   @Input({ required: true }) containerTypes: ContainerType[] = [];
   @Input({ required: true }) clinics: ListItem[] = [];
-  @Input({ required: true }) defaultClinicId: number = 0;
+  // @Input() defaultClinicId?: number;
 
   public onSubmit = output<Donation>();
   public onClose = output();
@@ -46,7 +47,8 @@ export class AddDonationComponent implements OnInit {
     private formBuilder: FormBuilder,
     private fedexPackService: FedexService,
     private dontainerContainerService: DonationContainerService,
-    private labelService: LabelService
+    private labelService: LabelService,
+    private userInfo: UserInfoService
   ) {
     this.donationForm = this.createDonationForm();
     this.selectedPackageType = PackageType.CustomPackage.toString();
@@ -56,6 +58,7 @@ export class AddDonationComponent implements OnInit {
     this.setDefaultValuesInFormControls();
     this.subscribeToPackageTypeChange();
     this.loadDonationContainers();
+
     this.loadDefaultValuesInForm();
     this.loadTrackingNumbers(this.defaultClinicId);
   }
@@ -82,7 +85,6 @@ export class AddDonationComponent implements OnInit {
           ? undefined
           : this.donationForm.value.trackingNumber
       );
-
       this.onSubmit.emit(newDonation);
       this.onClose.emit();
     }
@@ -149,6 +151,17 @@ export class AddDonationComponent implements OnInit {
     return this.donationForm.get('products') as FormArray;
   }
 
+  get defaultClinicId() {
+    if (this.userInfo.defaultClinicId()) {
+      return this.userInfo.defaultClinicId();
+    }
+
+    if (this.clinics.length > 0) {
+      return this.clinics[0].id;
+    }
+
+    return undefined;
+  }
   //#endregion
 
   //#region  Private Methods
@@ -231,7 +244,7 @@ export class AddDonationComponent implements OnInit {
       });
   }
 
-  private loadTrackingNumbers(clinicId: number) {
+  private loadTrackingNumbers(clinicId?: number) {
     if (clinicId) {
       this.labelService.getLabels(clinicId).subscribe((labels) => {
         this.trackingNumbers = labels;
@@ -244,9 +257,12 @@ export class AddDonationComponent implements OnInit {
   }
 
   private loadDefaultValuesInForm() {
-    this.donationForm.patchValue({
-      clinicId: this.defaultClinicId,
-    });
+    console.log('Default clinic id:' + this.defaultClinicId);
+    if (this.defaultClinicId) {
+      this.donationForm.patchValue({
+        clinicId: this.defaultClinicId,
+      });
+    }
   }
   //#endregion
 }

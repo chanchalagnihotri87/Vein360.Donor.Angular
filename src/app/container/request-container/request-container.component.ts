@@ -6,6 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import ListItem from '../../donation/shared/list-tem.model';
+import { UserInfoService } from '../../login/shared/user-info.service';
 import { ValidationMessageComponent } from '../../shared/validation-message/validation-message.component';
 import ContainerRequest from '../shared/container-request.model';
 import ContainerType from '../shared/container-type.model';
@@ -18,7 +19,6 @@ import ContainerType from '../shared/container-type.model';
 export class RequestContainerComponent implements OnInit {
   @Input({ required: true }) containerTypes: ContainerType[] = [];
   @Input({ required: true }) clinics: ListItem[] = [];
-  @Input({ required: true }) defaultClinicId: number = 0;
 
   onClose = output();
   onSubmit = output<ContainerRequest>();
@@ -27,7 +27,7 @@ export class RequestContainerComponent implements OnInit {
 
   private formBuilder = inject(FormBuilder);
 
-  constructor() {
+  constructor(private userInfo: UserInfoService) {
     this.containerForm = this.createContainerRequestForm();
   }
 
@@ -36,7 +36,9 @@ export class RequestContainerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.containerForm.patchValue({ clinicId: this.defaultClinicId });
+    if (this.defaultClinicId) {
+      this.containerForm.patchValue({ clinicId: this.defaultClinicId });
+    }
   }
 
   submitForm() {
@@ -53,6 +55,22 @@ export class RequestContainerComponent implements OnInit {
 
   get ContainerType() {
     return ContainerType;
+  }
+
+  get defaultClinicId() {
+    if (
+      this.userInfo.defaultClinicId() &&
+      this.clinics.filter((x) => x.id == this.userInfo.defaultClinicId())
+        .length > 0
+    ) {
+      return this.userInfo.defaultClinicId();
+    }
+
+    if (this.clinics.length > 0) {
+      return this.clinics[0].id;
+    }
+
+    return undefined;
   }
 
   private createContainerRequestForm() {
