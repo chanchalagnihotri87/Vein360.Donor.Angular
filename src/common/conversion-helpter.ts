@@ -3,8 +3,8 @@ export default class ConversionHelper {
     return new Date(dateString);
   }
 
-  static convertToInt(stringValue: string | undefined) {
-    if (stringValue != undefined) {
+  static convertToInt(stringValue: string | undefined | null) {
+    if (stringValue != undefined && stringValue != null) {
       return parseInt(stringValue);
     }
 

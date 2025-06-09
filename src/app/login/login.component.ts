@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { ValidationMessageComponent } from '../shared/validation-message/validation-message.component';
 import { AccountService } from './shared/account-service';
 import { AuthService } from './shared/auth.service';
+import AuthenticationResponse from './shared/authentication-response.model';
 
 @Component({
   selector: 'app-login',
@@ -35,8 +36,8 @@ export class LoginComponent {
       this.accountService
         .signIn(this.loginForm.value.email, this.loginForm.value.password)
         .subscribe({
-          next: (token: string) => {
-            this.authService.logIn(token);
+          next: (authResponse: AuthenticationResponse) => {
+            this.authService.logIn(authResponse);
             this.router.navigate(['']);
           },
           error: (error) => {

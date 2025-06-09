@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
+import AuthenticationResponse from './authentication-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +12,12 @@ export class AccountService {
   constructor(private httpClient: HttpClient) {}
 
   signIn(email: string, password: string) {
-    return this.httpClient.post<string>(`${this.baseUrl}/signin`, {
-      email: email,
-      password: password,
-    });
+    return this.httpClient.post<AuthenticationResponse>(
+      `${this.baseUrl}/signin`,
+      {
+        email: email,
+        password: password,
+      }
+    );
   }
 }
