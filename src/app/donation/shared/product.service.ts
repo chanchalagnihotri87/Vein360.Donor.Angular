@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import ListItem from './list-tem.model';
 import Product from './product.model';
 
 @Injectable({
@@ -14,5 +15,9 @@ export class ProductService {
 
   getProducts(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.baseUrl);
+  }
+
+  getProductList(): Observable<ListItem[]> {
+    return this.httpClient.get<ListItem[]>(`${this.baseUrl}/listitems`);
   }
 }

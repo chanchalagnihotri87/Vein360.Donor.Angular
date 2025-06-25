@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ContainerComponent } from './container/container.component';
 import { DonationComponent } from './donation/donation.component';
 import { LoginComponent } from './login/login.component';
@@ -12,4 +13,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   { path: 'login', component: LoginComponent },
+  {
+    path: 'changepassword',
+    component: ChangePasswordComponent,
+    canActivate: [authGuard],
+  },
 ];

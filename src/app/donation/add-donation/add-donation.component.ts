@@ -21,7 +21,6 @@ import Donation from '../shared/donation.model';
 import FedexService from '../shared/fedex.service';
 import { LabelService } from '../shared/label.service';
 import ListItem from '../shared/list-tem.model';
-import Product from '../shared/product.model';
 
 @Component({
   selector: 'app-add',
@@ -29,7 +28,7 @@ import Product from '../shared/product.model';
   templateUrl: './add-donation.component.html',
 })
 export class AddDonationComponent implements OnInit {
-  @Input({ required: true }) products: Product[] = [];
+  @Input({ required: true }) products: ListItem[] = [];
   @Input({ required: true }) containerTypes: ContainerType[] = [];
   @Input({ required: true }) clinics: ListItem[] = [];
   // @Input() defaultClinicId?: number;

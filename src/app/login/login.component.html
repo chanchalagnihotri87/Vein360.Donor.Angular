@@ -9,15 +9,14 @@
           </div>
           <form [formGroup]="loginForm" (ngSubmit)="login()" #form="ngForm">
             <div class="form-group">
-              <label>Email Address</label>
+              <label>Username</label>
               <input
-                type="email"
                 class="form-control"
-                placeholder="Your Email"
-                formControlName="email"
+                placeholder="Your Username"
+                formControlName="username"
               />
               <app-validation-message
-                fieldName="email"
+                fieldName="username"
                 [formGroup]="loginForm"
                 [ngFormTemplate]="form"
               ></app-validation-message>

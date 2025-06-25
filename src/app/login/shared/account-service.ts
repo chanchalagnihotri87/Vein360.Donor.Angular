@@ -7,16 +7,26 @@ import AuthenticationResponse from './authentication-response.model';
   providedIn: 'root',
 })
 export class AccountService {
-  private readonly baseUrl = `${environment.apiUrl}/accounts/donor`; // Replace with your API URL
+  private readonly baseUrl = `${environment.apiUrl}/accounts`; // Replace with your API URL
 
   constructor(private httpClient: HttpClient) {}
 
-  signIn(email: string, password: string) {
+  signIn(username: string, password: string) {
     return this.httpClient.post<AuthenticationResponse>(
-      `${this.baseUrl}/signin`,
+      `${this.baseUrl}/donor/signin`,
       {
-        email: email,
+        username: username,
         password: password,
+      }
+    );
+  }
+
+  changePassword(currentPassword: string, newPassword: string) {
+    return this.httpClient.put<AuthenticationResponse>(
+      `${this.baseUrl}/changepassword`,
+      {
+        currentPassword: currentPassword,
+        newPassword: newPassword,
       }
     );
   }

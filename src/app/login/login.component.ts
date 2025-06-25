@@ -21,7 +21,7 @@ export class LoginComponent {
   private formBuilder = inject(FormBuilder);
 
   loginForm: FormGroup = this.formBuilder.group({
-    email: ['', [Validators.required, Validators.email]],
+    username: ['', [Validators.required]],
     password: ['', Validators.required],
   });
 
@@ -34,10 +34,16 @@ export class LoginComponent {
   login() {
     if (this.loginForm.valid) {
       this.accountService
-        .signIn(this.loginForm.value.email, this.loginForm.value.password)
+        .signIn(this.loginForm.value.username, this.loginForm.value.password)
         .subscribe({
           next: (authResponse: AuthenticationResponse) => {
             this.authService.logIn(authResponse);
+
+            if (authResponse.firstTimeLogin) {
+              this.router.navigate(['changepassword']);
+              return;
+            }
+
             this.router.navigate(['']);
           },
           error: (error) => {

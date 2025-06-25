@@ -19,7 +19,6 @@ import DonationStatistic from './shared/donation-statistic.model';
 import Donation from './shared/donation.model';
 import { DonationService } from './shared/donation.service';
 import ListItem from './shared/list-tem.model';
-import Product from './shared/product.model';
 import { ProductService } from './shared/product.service';
 
 @Component({
@@ -31,7 +30,7 @@ import { ProductService } from './shared/product.service';
 export class DonationComponent implements OnInit {
   private donationModalRef?: BsModalRef;
   private confirmationModalRef?: BsModalRef;
-  private products: Product[] = [];
+  private products: ListItem[] = [];
   private donationContainers: DonationContainer[] = [];
   private containerTypes: ContainerType[] = [];
   private clinics: ListItem[] = [];
@@ -176,7 +175,7 @@ export class DonationComponent implements OnInit {
   }
 
   private loadProducts() {
-    this.productService.getProducts().subscribe((products) => {
+    this.productService.getProductList().subscribe((products) => {
       console.log(products);
       this.products = products;
     });

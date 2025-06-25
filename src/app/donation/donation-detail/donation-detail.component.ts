@@ -6,7 +6,6 @@ import { PackageType } from '../../shared/enums/package-type.enum';
 import Donation from '../shared/donation.model';
 import FedexService from '../shared/fedex.service';
 import ListItem from '../shared/list-tem.model';
-import Product from '../shared/product.model';
 
 @Component({
   selector: 'app-donation-detail',
@@ -19,7 +18,7 @@ export class DonationDetailComponent implements OnInit {
   @Input({ required: true }) donation?: Donation;
   @Input({ required: true }) containers: DonationContainer[] = [];
   @Input({ required: true }) clinics: ListItem[] = [];
-  @Input({ required: true }) products: Product[] = [];
+  @Input({ required: true }) products: ListItem[] = [];
 
   constructor(private fedexPackService: FedexService) {}
 
