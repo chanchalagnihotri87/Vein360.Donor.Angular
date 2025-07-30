@@ -23,6 +23,10 @@ h6 {
   line-height: 1.2;
 }
 
+p {
+  margin: 0;
+}
+
 header,
 .content,
 .user-card {
@@ -160,6 +164,7 @@ header,
   border-radius: 10px;
   font-weight: 500;
   cursor: pointer;
+  text-decoration: none;
   text-align: center;
   overflow: hidden;
   border: none;
@@ -353,4 +358,43 @@ header,
 
 .popover-label {
   width: 50px;
+}
+
+.user-card-search {
+  position: relative;
+  .form-control {
+    padding-right: 32px;
+  }
+  i {
+    color: var(--body-text-color);
+    position: absolute;
+    right: 12px;
+    top: 15px;
+  }
+}
+
+.product-item {
+  img {
+    height: 168px;
+  }
+  p,
+  span {
+    font-weight: 500;
+  }
+
+  p {
+    min-height: 48px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+}
+.ng-autocomplete {
+  width: 100%;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  padding-top: 0;
+  opacity: 0.5;
 }

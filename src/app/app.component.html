@@ -19,12 +19,30 @@
             routerLink=""
             [routerLinkActive]="['active']"
             [routerLinkActiveOptions]="{ exact: true }"
+            >Home</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link link-dark"
+            aria-current="page"
+            routerLink="orders"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >Orders</a
+          >
+        </li>
+        @if(userIsDonor) {
+        <li class="nav-item">
+          <a
+            class="nav-link link-dark"
+            aria-current="page"
+            routerLink="/donations"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
             >Donations</a
           >
         </li>
-        <!-- <li class="nav-item">
-          <a class="nav-link link-dark" routerLink="/wallet">Wallet</a>
-        </li> -->
         <li class="nav-item">
           <a
             class="nav-link link-dark"
@@ -34,6 +52,7 @@
             >Containers</a
           >
         </li>
+        }
       </ul>
 
       <div class="dropdown pt-2 text-end">
