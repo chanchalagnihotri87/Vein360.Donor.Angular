@@ -54,7 +54,7 @@
     </div>
     <div class="row mb-3">
       <div class="col-md-12">
-        <label for="clinicId" class="form-label">Clinic</label>
+        <label for="clinicId" class="form-label">Location</label>
         <select formControlName="clinicId" class="form-select">
           @for (clinic of clinics; track clinic.id) {
           <option [value]="clinic.id">{{ clinic.name }}</option>

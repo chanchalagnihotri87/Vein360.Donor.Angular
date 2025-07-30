@@ -86,6 +86,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
         product: product,
         clinicId: order.clinic.id,
         clinics: this.clinics,
+        title: 'Edit Order',
       },
       backdrop: 'static',
     };

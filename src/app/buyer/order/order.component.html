@@ -70,7 +70,7 @@
 
         <div id="orderdetail{{ order.id }}" class="row collapse">
           <div class="col-md-3 offset-md-1">
-            Clinic: {{ order.clinic.name }}
+            Location: {{ order.clinic.name }}
           </div>
           @if(isNotProcessed(order)){
           <div class="col-md-8 text-end">

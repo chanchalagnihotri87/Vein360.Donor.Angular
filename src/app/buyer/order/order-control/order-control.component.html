@@ -1,7 +1,7 @@
 <form [formGroup]="orderForm" (submit)="submitOrder()" #form="ngForm">
   <!-- Modal Header -->
   <div class="modal-header">
-    <h5 class="modal-title" id="donationModalLabel">Confirmation</h5>
+    <h5 class="modal-title" id="donationModalLabel">{{ title }}</h5>
     <button
       type="button"
       class="btn-close"
@@ -31,7 +31,7 @@
         <!-- Clinic -->
         <div class="row mb-3">
           <div class="col-md-12">
-            <label>Clinic</label>
+            <label>Location</label>
             <select class="form-select" formControlName="clinicId">
               @for (clinic of clinics; track clinic.id) {
               <option [value]="clinic.id">

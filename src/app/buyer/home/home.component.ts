@@ -155,6 +155,7 @@ export class HomeComponent implements OnInit {
         product: product,
         clinicId: this.defaultClinicId,
         clinics: this.clinics,
+        title: 'Confirmation',
       },
       backdrop: 'static',
     };
