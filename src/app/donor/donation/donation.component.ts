@@ -175,7 +175,7 @@ export class DonationComponent implements OnInit {
   }
 
   private loadProducts() {
-    this.productService.getProductList().subscribe((products) => {
+    this.productService.getSortProductList().subscribe((products) => {
       console.log(products);
       this.products = products;
     });

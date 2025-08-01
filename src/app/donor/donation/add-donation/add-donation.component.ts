@@ -55,7 +55,7 @@ export class AddDonationComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDefaultValuesInFormControls();
-    // this.subscribeToPackageTypeChange();
+    this.subscribeToPackageTypeChange();
     this.loadDonationContainers();
 
     this.loadDefaultValuesInForm();

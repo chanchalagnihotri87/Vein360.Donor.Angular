@@ -17,7 +17,7 @@ export class ProductService {
     return this.httpClient.get<Product[]>(this.baseUrl);
   }
 
-  getProductList(): Observable<ListItem[]> {
-    return this.httpClient.get<ListItem[]>(`${this.baseUrl}/listitems`);
+  getSortProductList(): Observable<ListItem[]> {
+    return this.httpClient.get<ListItem[]>(`${this.baseUrl}/listitems/sort`);
   }
 }

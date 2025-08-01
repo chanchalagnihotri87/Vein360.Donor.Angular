@@ -5,6 +5,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { ClinicService } from '../../donor/donation/shared/clinic.service';
 import ListItem from '../../donor/donation/shared/list-tem.model';
+import { ProductCategoryService } from '../../donor/donation/shared/product-category.service';
 import { BaseComponent } from '../../shared/base-component';
 import { ConfirmationMessageComponent } from '../../shared/confirmation-modal/confirmation-modal.component';
 import { ProductType } from '../home/shared/product-type';
@@ -33,7 +34,8 @@ export class OrderComponent extends BaseComponent implements OnInit {
     private readonly orderService: OrderService,
     private readonly modalService: BsModalService,
     private readonly clinicService: ClinicService,
-    private readonly userProductService: UserProductService
+    private readonly userProductService: UserProductService,
+    private readonly productCategoryService: ProductCategoryService
   ) {
     super();
   }
@@ -64,7 +66,7 @@ export class OrderComponent extends BaseComponent implements OnInit {
   }
 
   protected getCategoryString(category: ProductType) {
-    return ProductType[category];
+    return this.productCategoryService.getCategoryString(category);
   }
 
   protected isNotProcessed(order: Order) {

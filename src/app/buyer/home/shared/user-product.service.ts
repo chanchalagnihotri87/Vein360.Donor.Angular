@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { UserProduct } from './user-product.model';
 
 @Injectable({
@@ -11,8 +11,10 @@ export class UserProductService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getProducts() {
-    return this.httpClient.get<UserProduct[]>(`${this.baseUrl}/user/products`);
+  getSaleProducts() {
+    return this.httpClient.get<UserProduct[]>(
+      `${this.baseUrl}/user/products/sale`
+    );
   }
 
   getProduct(productId: number) {

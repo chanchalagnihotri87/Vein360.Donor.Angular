@@ -4,9 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { environment } from '../../../environments/environment';
 import { ClinicService } from '../../donor/donation/shared/clinic.service';
 import ListItem from '../../donor/donation/shared/list-tem.model';
 import Product from '../../donor/donation/shared/product.model';
+import { ProductService } from '../../donor/donation/shared/product.service';
 import { BreadcrumbService } from '../../shared/breadcrumb/shared/breadcrumb.service';
 import { UserInfoService } from '../../shared/login/shared/user-info.service';
 import { OrderControlComponent } from '../order/order-control/order-control.component';
@@ -29,6 +31,8 @@ export class HomeComponent implements OnInit {
   clinics: ListItem[] = [];
   orderNowModal?: BsModalRef;
 
+  apiDomainUrl = environment.apiUrl;
+
   constructor(
     private readonly breadcrumbService: BreadcrumbService,
     private readonly userProductService: UserProductService,
@@ -36,7 +40,8 @@ export class HomeComponent implements OnInit {
     private readonly modalService: BsModalService,
     private readonly orderService: OrderService,
     private readonly router: Router,
-    private readonly clinicService: ClinicService
+    private readonly clinicService: ClinicService,
+    private readonly productService: ProductService
   ) {
     this.setBereadcrumb();
   }
@@ -47,11 +52,9 @@ export class HomeComponent implements OnInit {
   }
 
   private loadProducts() {
-    this.userProductService.getProducts().subscribe((products) => {
+    this.userProductService.getSaleProducts().subscribe((products) => {
       this.products = products;
       this.allProducts = products;
-      console.log('Products:');
-      console.log(products);
     });
   }
 

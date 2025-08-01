@@ -6,8 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 import ListItem from '../../../donor/donation/shared/list-tem.model';
+import { ProductCategoryService } from '../../../donor/donation/shared/product-category.service';
 import { ValidationMessageComponent } from '../../../shared/validation-message/validation-message.component';
-import { ProductType } from '../../home/shared/product-type';
 import { UserProduct } from '../../home/shared/user-product.model';
 
 @Component({
@@ -28,6 +28,7 @@ export class OrderControlComponent implements OnInit {
   public orderForm: FormGroup;
 
   private formBuilder = inject(FormBuilder);
+  private productCategoryService = inject(ProductCategoryService);
 
   constructor() {
     this.orderForm = this.createOrderForm();
@@ -61,10 +62,7 @@ export class OrderControlComponent implements OnInit {
   }
 
   protected getCategoryString(cateory?: number) {
-    if (!cateory) {
-      return '';
-    }
-    return ProductType[cateory];
+    return this.productCategoryService.getCategoryString(cateory);
   }
 
   //#endregion
