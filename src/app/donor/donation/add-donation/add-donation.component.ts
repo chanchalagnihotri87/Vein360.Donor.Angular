@@ -18,7 +18,6 @@ import DonationContainer from '../../container/shared/donation-container.model';
 import { DonationContainerService } from '../../container/shared/donation-container.service';
 import DonationProduct from '../shared/donation-product.model';
 import Donation from '../shared/donation.model';
-import FedexService from '../shared/fedex.service';
 import { LabelService } from '../shared/label.service';
 import ListItem from '../shared/list-tem.model';
 
@@ -44,7 +43,6 @@ export class AddDonationComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private fedexPackService: FedexService,
     private dontainerContainerService: DonationContainerService,
     private labelService: LabelService,
     private userInfo: UserInfoService
@@ -55,7 +53,6 @@ export class AddDonationComponent implements OnInit {
 
   ngOnInit(): void {
     this.setDefaultValuesInFormControls();
-    this.subscribeToPackageTypeChange();
     this.loadDonationContainers();
 
     this.loadDefaultValuesInForm();
@@ -68,18 +65,11 @@ export class AddDonationComponent implements OnInit {
     if (this.donationForm.valid) {
       const newDonation = new Donation(
         this.donationForm.value.clinicId,
-        this.donationForm.value.packageType,
         this.donationForm.value.products.map(
           (productItem: { product: number; units: number }) => {
             return new DonationProduct(productItem.product, productItem.units);
           }
         ),
-        this.donationForm.value.containerTypeId == ''
-          ? undefined
-          : this.donationForm.value.containerTypeId,
-        this.donationForm.value.fedexPackageTypeId == ''
-          ? undefined
-          : this.donationForm.value.fedexPackageTypeId,
         this.donationForm.value.trackingNumber == ''
           ? undefined
           : this.donationForm.value.trackingNumber
@@ -96,11 +86,6 @@ export class AddDonationComponent implements OnInit {
         units: ['', Validators.required],
       })
     );
-  }
-
-  public packageTypeChanged() {
-    this.containerTypeIdFormControl.setValue('');
-    this.fedexPackageTypeIdFormControl.setValue('');
   }
 
   public clinicSelectionChanged(event: Event) {
@@ -125,22 +110,6 @@ export class AddDonationComponent implements OnInit {
   //#endregion
 
   //#region Get Properties
-
-  get ContainerType() {
-    return PackageType;
-  }
-
-  get fedexPacks() {
-    return this.fedexPackService.FedexPacks;
-  }
-
-  get containerTypeIdFormControl() {
-    return this.donationForm.get('containerTypeId') as FormControl;
-  }
-
-  get fedexPackageTypeIdFormControl() {
-    return this.donationForm.get('fedexPackageTypeId') as FormControl;
-  }
 
   get trackingNumberFormControl() {
     return this.donationForm.get('trackingNumber') as FormControl;
@@ -168,9 +137,6 @@ export class AddDonationComponent implements OnInit {
   private createDonationForm() {
     return this.formBuilder.group({
       clinicId: ['', Validators.required],
-      packageType: ['', Validators.required],
-      containerTypeId: [''],
-      fedexPackageTypeId: [''],
       trackingNumber: [''],
 
       products: this.formBuilder.array([
@@ -196,33 +162,6 @@ export class AddDonationComponent implements OnInit {
     (this.donationForm.get('products') as FormArray).controls[0]
       .get('units')
       ?.setValue('');
-  }
-
-  private subscribeToPackageTypeChange() {
-    this.donationForm.get('packageType')?.valueChanges.subscribe((val) => {
-      this.updateContainerAndFedexPackagingValidations(val);
-    });
-  }
-
-  private updateContainerAndFedexPackagingValidations(packageType: string) {
-    switch (packageType) {
-      case PackageType.Vein360Container.toString():
-        this.containerTypeIdFormControl.setValidators([Validators.required]);
-        this.fedexPackageTypeIdFormControl.clearValidators();
-        break;
-
-      case PackageType.FedexPackage.toString():
-        this.fedexPackageTypeIdFormControl.setValidators([Validators.required]);
-        this.containerTypeIdFormControl.clearValidators();
-        break;
-      default:
-        this.containerTypeIdFormControl.clearValidators();
-        this.fedexPackageTypeIdFormControl.clearValidators();
-        break;
-    }
-
-    this.containerTypeIdFormControl.updateValueAndValidity();
-    this.fedexPackageTypeIdFormControl.updateValueAndValidity();
   }
 
   private updateTrackingNumberValidations() {

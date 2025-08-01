@@ -96,7 +96,6 @@ export class DonationComponent implements OnInit {
   //#region Donation Detail
   handleShowDonationDetail(donationId: number) {
     this.donationService.getDonationById(donationId).subscribe((donation) => {
-      console.log(donation);
       this.showDonationDetailModal(donation);
     });
   }
@@ -155,7 +154,6 @@ export class DonationComponent implements OnInit {
   //#region Private Methods
   private loadDonations() {
     this.donationService.getDonations().subscribe((donations) => {
-      console.log(donations);
       this.donations = donations;
       this.donationsLoaded = true;
     });
@@ -171,14 +169,12 @@ export class DonationComponent implements OnInit {
     this.containerService
       .getContainers()
       .subscribe((containers: DonationContainer[]) => {
-        console.log(containers);
         this.donationContainers = containers;
       });
   }
 
   private loadProducts() {
     this.productService.getSortProductList().subscribe((products) => {
-      console.log(products);
       this.products = products;
     });
   }

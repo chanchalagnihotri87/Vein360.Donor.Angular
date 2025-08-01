@@ -23,9 +23,6 @@ export class DonationService {
   addDonation(donation: Donation) {
     let donationData = {
       clinicId: donation.clinicId,
-      packageType: donation.packageType,
-      containerTypeId: donation.containerTypeId,
-      fedexPackagingTypeId: donation.fedexPackagingTypeId,
       trackingNumber: donation.trackingNumber,
       products: donation.products.map((product) => product),
     };

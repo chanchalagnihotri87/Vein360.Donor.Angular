@@ -6,9 +6,6 @@ import DonationProduct from './donation-product.model';
 export default class Donation {
   id: number = 0;
   clinicId: number;
-  packageType: number;
-  containerTypeId?: number;
-  fedexPackagingTypeId?: number;
   productTypes: string[] = [];
   trackingNumber?: string;
   useOldLabel: boolean = false;
@@ -24,17 +21,11 @@ export default class Donation {
 
   constructor(
     clinicId: number,
-    packageType: number,
     products: DonationProduct[],
-    containerTypeId?: number,
-    fedexPackagningTypeId?: number,
     trackingNumber?: string
   ) {
     this.clinicId = clinicId;
-    this.packageType = packageType;
     this.products = products;
-    this.containerTypeId = containerTypeId;
-    this.fedexPackagingTypeId = fedexPackagningTypeId;
     this.trackingNumber = trackingNumber;
   }
 
