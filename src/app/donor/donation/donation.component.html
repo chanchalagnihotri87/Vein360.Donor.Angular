@@ -52,10 +52,16 @@
   </div>
   <div class="user-card-body">
     <!-- Donations List -->
+    @if(donationsLoaded){ @if(donations.length>0) {
     <app-donation-list
       [donations]="donations"
       (onDetailClick)="handleShowDonationDetail($event)"
       (onDeleteClick)="handleDeleteDonation($event)"
     ></app-donation-list>
+    } @else{
+    <p>No donation available.</p>
+    }}@else{
+    <p>Loading..</p>
+    }
   </div>
 </div>

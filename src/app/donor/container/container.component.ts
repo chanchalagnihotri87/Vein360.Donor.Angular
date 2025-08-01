@@ -22,6 +22,7 @@ import { DonationContainerService } from './shared/donation-container.service';
 export class ContainerComponent implements OnInit {
   protected containers: DonationContainer[] = [];
   protected containerTypes: ContainerType[] = [];
+  protected containersLoaded = false;
 
   private clinics: ListItem[] = [];
 
@@ -119,8 +120,8 @@ export class ContainerComponent implements OnInit {
   private loadDonationContainers() {
     this.donationContainerService.getContainers().subscribe({
       next: (containers: DonationContainer[]) => {
-        console.log(containers);
         this.containers = containers;
+        this.containersLoaded = true;
       },
       error: (err) => {
         console.error('Failed to load containers:', err);

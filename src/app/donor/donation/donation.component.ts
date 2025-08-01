@@ -36,6 +36,7 @@ export class DonationComponent implements OnInit {
   private clinics: ListItem[] = [];
 
   protected donations: Donation[] = [];
+  protected donationsLoaded = false;
   public donationStatistic?: DonationStatistic;
 
   constructor(
@@ -156,6 +157,7 @@ export class DonationComponent implements OnInit {
     this.donationService.getDonations().subscribe((donations) => {
       console.log(donations);
       this.donations = donations;
+      this.donationsLoaded = true;
     });
   }
 
