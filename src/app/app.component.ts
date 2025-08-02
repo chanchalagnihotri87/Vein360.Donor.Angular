@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { AuthService } from './login/shared/auth.service';
 import { BreadcrumbComponent } from './shared/breadcrumb/breadcrumb.component';
 import { LoaderComponent } from './shared/loader/loader.component';
-import { AuthService } from './shared/login/shared/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -24,9 +24,5 @@ export class AppComponent {
 
   get userIsLoggedIn() {
     return this.authService.isLoggedIn();
-  }
-
-  get userIsDonor() {
-    return this.authService.isDonor();
   }
 }

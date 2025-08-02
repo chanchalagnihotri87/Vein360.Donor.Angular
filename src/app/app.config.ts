@@ -2,9 +2,9 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '../common/interceptors/auth.interceptor';
+import { loaderInterceptor } from '../common/interceptors/loader.interceptor';
 import { routes } from './app.routes';
-import { authInterceptor } from './auth.interceptor';
-import { loaderInterceptor } from './loader.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
