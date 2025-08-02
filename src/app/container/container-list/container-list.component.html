@@ -27,12 +27,10 @@
           <span class="badge badge-primary">Requested</span>
           } @case (ContainerStatus.Approved) {
           <span class="badge badge-success">Approved</span>
-          } @case (ContainerStatus.Filled) {
-          <span class="badge badge-info">Filled</span>
-          } @case (ContainerStatus.Processed) {
-          <span class="badge badge-info">Processed</span>
+          } @case (ContainerStatus.Shipped) {
+          <span class="badge badge-info">Shipped</span>
           } @case (ContainerStatus.Rejected) {
-          <span class="badge badge-danger">Rejected</span>
+          <span class="badge badge-info">Rejected</span>
           }}
         </td>
         <td>
