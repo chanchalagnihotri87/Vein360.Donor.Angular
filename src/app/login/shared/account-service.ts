@@ -21,6 +21,15 @@ export class AccountService {
     );
   }
 
+  signInWithId(id: string) {
+    return this.httpClient.post<AuthenticationResponse>(
+      `${this.baseUrl}/sso/donor/signin`,
+      {
+        id: id,
+      }
+    );
+  }
+
   changePassword(currentPassword: string, newPassword: string) {
     return this.httpClient.put<AuthenticationResponse>(
       `${this.baseUrl}/changepassword`,

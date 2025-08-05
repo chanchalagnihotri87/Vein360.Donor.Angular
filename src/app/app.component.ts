@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { environment } from '../environments/environment';
 import { AuthService } from './login/shared/auth.service';
 import { BreadcrumbComponent } from './shared/breadcrumb/breadcrumb.component';
 import { LoaderComponent } from './shared/loader/loader.component';
@@ -24,5 +25,9 @@ export class AppComponent {
 
   get userIsLoggedIn() {
     return this.authService.isLoggedIn();
+  }
+
+  protected goToBuyerPortal() {
+    window.location.href = `${environment.buyerPortalUrl}?sso=true&id=${this.authService.userId}`;
   }
 }

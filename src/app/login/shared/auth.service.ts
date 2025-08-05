@@ -6,6 +6,8 @@ import AuthConstants from './auth-constants.model';
 import AuthenticationResponse from './authentication-response.model';
 const roleClaimKey =
   'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
+const idClaimKey =
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier';
 
 @Injectable({
   providedIn: 'root',
@@ -72,6 +74,18 @@ export class AuthService {
 
   public get defaultClinicId() {
     return this.default_Clinic_Id.asReadonly();
+  }
+
+  public get userId() {
+    if (this.token()) {
+      try {
+        const decodedToken: any = jwtDecode(this.token()!);
+        return decodedToken[idClaimKey];
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+    return undefined;
   }
 
   private get userRole(): string | undefined {
