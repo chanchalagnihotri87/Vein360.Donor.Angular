@@ -12,12 +12,16 @@ export default class Donation {
   labelFileName: string = '';
   labelPath?: string;
   createdDate: Date = new Date();
-  status: DonationStatus = DonationStatus.Donated;
+  status: DonationStatus = DonationStatus.Returned;
 
   products: DonationProduct[];
   containerType?: ContainerType; // This will be set later when the container is fetched
 
+  donationProduct?: DonationProduct; //for request with single product changes
+
   clinic?: Clinic;
+
+  public expanded: boolean = false;
 
   constructor(
     clinicId: number,

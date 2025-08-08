@@ -1,0 +1,113 @@
+<div class="user-card">
+  <!-- Page Header -->
+  <div class="user-card-header">
+    <h4 class="user-card-title">Returns</h4>
+  </div>
+  <!-- Returns List -->
+  <div class="user-card-body">
+    @if(donationLoaded){ @if(donations.length>0){ @for(donation of donations;
+    track donation.id){
+    <div class="row border rounded mb-3 py-3">
+      <div class="col">
+        <div class="row">
+          <div class="col-md-1">
+            <img
+              src="{{ productImagePath }}/{{
+                donation.donationProduct?.product?.image
+              }}"
+              width="100%"
+            />
+          </div>
+
+          <div class="col-md-4">
+            <h6>{{ donation.donationProduct?.product?.name }}</h6>
+            <p>
+              {{
+                getCategoryDescription(donation.donationProduct?.product?.type)
+              }}
+            </p>
+            <p>#{{ donation.id }}</p>
+          </div>
+
+          <div class="col-md-2 pt-md-2">
+            <p>Status: {{ getDonationStatusDescription(donation.status) }}</p>
+            <p>Quantity: {{ donation.donationProduct?.units }}</p>
+          </div>
+
+          <div class="col-md-3 pt-md-2">
+            <p>Date: {{ donation.createdDate | date : "mediumDate" }}</p>
+            <p>Tracking No: {{ donation.trackingNumber }}</p>
+          </div>
+
+          <div class="col text-end pt-md-4">
+            <button
+              class="btn-icon"
+              type="button"
+              data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#donationdetail' + donation.id"
+              (click)="donation.expanded = !donation.expanded"
+            >
+              @if(donation.expanded){
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="#757f95"
+                class="bi bi-caret-down-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"
+                />
+              </svg>
+
+              } @else{
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="#757f95"
+                class="bi bi-caret-right-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"
+                />
+              </svg>
+              }
+            </button>
+          </div>
+        </div>
+
+        <div id="donationdetail{{ donation.id }}" class="row collapse">
+          <div class="col-md-4 offset-md-1">
+            Sender's Address:
+            <app-address [clinic]="donation?.clinic"></app-address>
+          </div>
+          <div class="col-md-2">
+            @if(isProcessed(donation)){
+            <p>Accepted: {{ donation.donationProduct?.accepted }}</p>
+            <p>Rejected: {{ donation.donationProduct?.rejected }}</p>
+            }
+          </div>
+          @if(isNotProcessed(donation)){
+          <div class="col text-md-end">
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              tooltip="Delete"
+              (click)="deleteReturn(donation, $event)"
+            >
+              <i class="fa fa-trash fa-lg"></i>
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    } } @else{
+    <p>No return available</p>
+    } } @else{
+    <p>Loading...</p>
+    }
+  </div>
+</div>

@@ -27,6 +27,9 @@ export class DonationService {
       products: donation.products.map((product) => product),
     };
 
+    console.log('Donation Data:');
+    console.log(donationData);
+
     return this.httpClient.post(this.baseUrl, donationData);
   }
 

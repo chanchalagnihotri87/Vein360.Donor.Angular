@@ -1,0 +1,83 @@
+<div class="row">
+  <div class="col-md-3">
+    <div class="user-card mb-3">
+      <h6 class="mb-3">Search</h6>
+      <div class="user-card-search">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          [(ngModel)]="searchText"
+          (keyup)="onChangeSearch()"
+        />
+      </div>
+    </div>
+
+    <div class="user-card mb-3">
+      <h6 class="mb-3">Category</h6>
+      <ul class="list-group">
+        <li
+          [class]="`list-group-item ${categoryIsSelected(ProductType.ClosureFast)? 'active':''}`"
+          role="button"
+          (click)="toggleCategorySelection(ProductType.ClosureFast)"
+        >
+          Closure Fast
+          <span class="float-end"
+            >({{ getCategoryProductCount(ProductType.ClosureFast) }})</span
+          >
+        </li>
+        <li
+          class="list-group-item"
+          role="button"
+          (click)="toggleCategorySelection(ProductType.IVUS)"
+          [class]="`list-group-item ${categoryIsSelected(ProductType.IVUS)? 'active':''}`"
+        >
+          IVUS Catheter
+          <span class="float-end"
+            >({{ getCategoryProductCount(ProductType.IVUS) }})</span
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-9">
+    @if(productLoaded){ @if(products.length>0){
+    <div class="row">
+      @for(product of products; track product.id){
+      <div class="col-md-4">
+        <div class="user-card product-item">
+          <div class="w-100 text-center">
+            <img
+              src="{{ apiDomainUrl }}/products/image/{{ product.image }}"
+              class="img-fluid"
+              alt="{{ product.name }}"
+            />
+          </div>
+          <p>{{ product.name }}</p>
+          <div class="row">
+            <div class="col-md-5">
+              <span class="text-danger">{{
+                product.price | currency : "USD" : "symbol" : "1.0"
+              }}</span>
+            </div>
+            <div class="col-md-7 text-end">
+              <button
+                class="vein-btn-success"
+                type="button"
+                (click)="returnNow(product.id)"
+              >
+                Return Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }@else{
+    <p>No product available.</p>
+    } } @else{
+    <p>Loading..</p>
+    }
+  </div>
+</div>

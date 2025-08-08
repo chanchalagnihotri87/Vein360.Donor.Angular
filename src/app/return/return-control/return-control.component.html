@@ -1,0 +1,109 @@
+<form [formGroup]="returnForm" (submit)="submitReturnForm()" #form="ngForm">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button class="btn-close" type="button" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="row mb-3">
+          <div class="col-auto">
+            <img
+              height="48px"
+              src="{{ productImagePath }}/{{ product?.image }}"
+            />
+          </div>
+          <div class="col">
+            <h6>{{ product?.name }}</h6>
+            <p class="mb-0">{{ getCategoryDescription(product?.type) }}</p>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-12">
+            <label>Sender's Address</label>
+            <select
+              class="form-select"
+              formControlName="clinicId"
+              (change)="clinicChanged($event)"
+            >
+              @for(clinic of clinics; track clinic.id){
+              <option [value]="clinic.id">
+                {{
+                  clinic?.addressLine2
+                    ? clinic?.addressLine1 + " " + clinic?.addressLine2
+                    : clinic?.addressLine1
+                }}, {{ clinic?.city }}, {{ clinic?.state }}
+                {{ clinic?.postalCode }} {{ clinic?.country }}
+              </option>
+              }
+            </select>
+            <app-validation-message
+              [formGroup]="returnForm"
+              [ngFormTemplate]="form"
+              fieldName="clinicId"
+            ></app-validation-message>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-12">
+            <label>Quantity</label>
+            <input
+              type="number"
+              class="form-control"
+              value="1"
+              min="1"
+              oninput="validity.valid||(value='')"
+              formControlName="quantity"
+            />
+
+            <app-validation-message
+              [formGroup]="returnForm"
+              [ngFormTemplate]="form"
+              fieldName="quantity"
+            >
+            </app-validation-message>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="form-check">
+              <label class="form-check-label">Use Vein360 Label</label>
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="useOldLabel"
+                name="useOldLabel"
+                [checked]="useOldLabel"
+                (change)="toggleUseOldLabel()"
+              />
+            </div>
+
+            @if(useOldLabel){
+            <select class="form-select" formControlName="trackingNumber">
+              <option value="">Select Tracking Number</option>
+              @for(trackingNumber of trackingNumbers; track trackingNumber){
+              <option [value]="trackingNumber">{{ trackingNumber }}</option>
+              }
+            </select>
+            <app-validation-message
+              [formGroup]="returnForm"
+              [ngFormTemplate]="form"
+              fieldName="trackingNumber"
+            >
+            </app-validation-message>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="vein-btn-success">Return</button>
+    <button type="button" class="vein-btn-light" (click)="closeModal()">
+      Cancel
+    </button>
+  </div>
+</form>

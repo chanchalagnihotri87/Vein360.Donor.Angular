@@ -3,7 +3,6 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../../app/login/shared/auth.service';
 
 export const ssoGuard: CanActivateFn = (route, state) => {
-  debugger;
   const authService = inject(AuthService);
   const router = inject(Router);
 

@@ -3,17 +3,30 @@ import { authGuard } from '../common/guards/auth.guard';
 import { ssoGuard } from '../common/guards/sso.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ContainerComponent } from './container/container.component';
-import { DonationComponent } from './donation/donation.component';
+import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
+import { ReturnComponent } from './return/return.component';
 import { SignleSignInComponent } from './signle-sign-in/signle-sign-in.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: DonationComponent,
+    component: HomeComponent,
     canActivate: [ssoGuard, authGuard],
-    data: { donorOnly: true },
   },
+  {
+    path: 'return',
+    component: ReturnComponent,
+    canActivate: [authGuard],
+  },
+
+  // {
+  //   path: 'donation',
+  //   component: DonationComponent,
+  //   canActivate: [authGuard],
+  //   data: { donorOnly: true },
+  // },
+
   {
     path: 'container',
     component: ContainerComponent,
