@@ -32,7 +32,7 @@
           }
         </td>
         <td>
-          @switch(donation.status) { @case (DonationStatus.Donated) {
+          @switch(donation.status) { @case (DonationStatus.Returned) {
           <span class="badge badge-primary">Donated</span>
           } @case (DonationStatus.Received) {
           <span class="badge badge-secondary">Received</span>
@@ -55,7 +55,7 @@
             <i class="fa fa-eye fa-lg"></i>
           </button>
 
-          @if(donation.status == DonationStatus.Donated) {
+          @if(donation.status == DonationStatus.Returned) {
 
           <button
             class="btn btn-outline-secondary btn-sm"

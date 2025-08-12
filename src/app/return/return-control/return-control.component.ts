@@ -28,6 +28,7 @@ export class ReturnControlComponent extends BaseComponent implements OnInit {
   @Input({ required: true }) title: string = '';
   @Input({ required: true }) product?: Product;
   @Input({ required: true }) clinics: Clinic[] = [];
+  @Input() donation?: Donation;
 
   public onClose = output();
   public onSubmit = output<Donation>();
@@ -48,13 +49,20 @@ export class ReturnControlComponent extends BaseComponent implements OnInit {
     this.returnForm = this.createReturnForm();
   }
   ngOnInit(): void {
-    if (this.defaultClinicId) {
-      this.loadTrackingNumbers(this.defaultClinicId);
+    if (this.donation) {
+      this.loadTrackingNumbers(this.donation!.clinic!.id);
+      this.returnForm.patchValue({
+        clinicId: this.donation!.clinic!.id.toString(),
+        quantity: this.donation!.donationProduct?.units,
+      });
+    } else {
+      if (this.defaultClinicId) {
+        this.loadTrackingNumbers(this.defaultClinicId);
+        this.returnForm.patchValue({
+          clinicId: this.defaultClinicId!.toString(),
+        });
+      }
     }
-
-    this.returnForm.patchValue({
-      clinicId: this.defaultClinicId?.toString() ?? '1',
-    });
   }
 
   private createReturnForm() {

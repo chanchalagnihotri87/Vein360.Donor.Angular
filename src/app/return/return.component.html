@@ -31,7 +31,19 @@
 
           <div class="col-md-2 pt-md-2">
             <p>Status: {{ getDonationStatusDescription(donation.status) }}</p>
-            <p>Quantity: {{ donation.donationProduct?.units }}</p>
+            @if(donation.labelFileName){
+            <p>
+              Label:
+              <button
+                type="button"
+                class="btn-icon"
+                target="_blank"
+                (click)="downloadLabel(donation.labelFileName)"
+              >
+                <i class="fa fa-download"></i>
+              </button>
+            </p>
+            }
           </div>
 
           <div class="col-md-3 pt-md-2">
@@ -85,13 +97,25 @@
             <app-address [clinic]="donation?.clinic"></app-address>
           </div>
           <div class="col-md-2">
+            <p>Quantity: {{ donation.donationProduct?.units }}</p>
+          </div>
+          <div class="col-md-3">
             @if(isProcessed(donation)){
             <p>Accepted: {{ donation.donationProduct?.accepted }}</p>
             <p>Rejected: {{ donation.donationProduct?.rejected }}</p>
             }
           </div>
-          @if(isNotProcessed(donation)){
+
           <div class="col text-md-end">
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm me-2"
+              tooltip="Repeat"
+              (click)="repeatReturn(donation, $event)"
+            >
+              <i class="fa fa-repeat fa-lg"></i>
+            </button>
+            @if(isNotProcessed(donation)){
             <button
               class="btn btn-outline-secondary btn-sm"
               tooltip="Delete"
@@ -99,8 +123,8 @@
             >
               <i class="fa fa-trash fa-lg"></i>
             </button>
+            }
           </div>
-          }
         </div>
       </div>
     </div>
