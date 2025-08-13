@@ -1,4 +1,3 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,7 +16,7 @@ import { UserProductService } from './shared/user-product.service';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, CurrencyPipe],
+  imports: [FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

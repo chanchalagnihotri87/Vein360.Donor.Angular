@@ -45,7 +45,7 @@
     <div class="row">
       @for(product of products; track product.id){
       <div class="col-md-4">
-        <div class="user-card product-item">
+        <div class="user-card product-item text-center">
           <div class="w-100 text-center">
             <img
               src="{{ apiDomainUrl }}/products/image/{{ product.image }}"
@@ -55,12 +55,7 @@
           </div>
           <p>{{ product.name }}</p>
           <div class="row">
-            <div class="col-md-5">
-              <span class="text-danger">{{
-                product.price | currency : "USD" : "symbol" : "1.0"
-              }}</span>
-            </div>
-            <div class="col-md-7 text-end">
+            <div class="col-12">
               <button
                 class="vein-btn-success"
                 type="button"
