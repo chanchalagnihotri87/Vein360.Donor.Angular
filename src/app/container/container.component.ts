@@ -120,7 +120,7 @@ export class ContainerComponent implements OnInit {
   private loadDonationContainers() {
     this.donationContainerService.getContainers().subscribe({
       next: (containers: DonationContainer[]) => {
-        this.containers = containers;
+        this.containers = containers.sort((a, b) => b.id - a.id); //To make containers list in descending order
         this.containersLoaded = true;
       },
       error: (err) => {
