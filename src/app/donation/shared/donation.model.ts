@@ -9,6 +9,7 @@ export default class Donation {
   productTypes: string[] = [];
   trackingNumber?: string;
   pickupConfirmationCode?: string;
+  pickupTransactionId?: string;
   useOldLabel: boolean = false;
   labelFileName: string = '';
   labelPath?: string;
