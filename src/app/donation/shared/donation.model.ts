@@ -8,6 +8,7 @@ export default class Donation {
   clinicId: number;
   productTypes: string[] = [];
   trackingNumber?: string;
+  pickupConfirmationCode?: string;
   useOldLabel: boolean = false;
   labelFileName: string = '';
   labelPath?: string;

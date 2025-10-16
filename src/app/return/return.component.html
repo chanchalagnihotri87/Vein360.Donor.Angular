@@ -98,12 +98,13 @@
           </div>
           <div class="col-md-2">
             <p>Quantity: {{ donation.donationProduct?.units }}</p>
-          </div>
-          <div class="col-md-3">
             @if(isProcessed(donation)){
             <p>Accepted: {{ donation.donationProduct?.accepted }}</p>
             <p>Rejected: {{ donation.donationProduct?.rejected }}</p>
             }
+          </div>
+          <div class="col">
+            <p>Pickup Code: {{ donation.pickupConfirmationCode }}</p>
           </div>
 
           <div class="col text-md-end">
