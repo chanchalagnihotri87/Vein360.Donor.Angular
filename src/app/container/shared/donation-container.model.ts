@@ -1,4 +1,4 @@
-import Clinic from '../../donation/shared/clinic.model';
+import Clinic from '../../shared/clinic/clinic.model';
 import { DonationContainerStatus } from '../../shared/enums/donation-container-status.enum';
 import ContainerType from './container-type.model';
 import Vein360Container from './vein-360-container.model';

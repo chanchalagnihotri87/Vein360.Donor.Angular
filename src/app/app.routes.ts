@@ -20,13 +20,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
-  // {
-  //   path: 'donation',
-  //   component: DonationComponent,
-  //   canActivate: [authGuard],
-  //   data: { donorOnly: true },
-  // },
-
   {
     path: 'container',
     component: ContainerComponent,

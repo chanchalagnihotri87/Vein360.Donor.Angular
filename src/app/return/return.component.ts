@@ -3,20 +3,20 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import Clinic from '../donation/shared/clinic.model';
-import { ClinicService } from '../donation/shared/clinic.service';
-import { DocumentService } from '../donation/shared/document.service';
-import Donation from '../donation/shared/donation.model';
-import { DonationService } from '../donation/shared/donation.service';
-import { ProductCategoryService } from '../donation/shared/product-category.service';
 import { UserProduct } from '../home/shared/user-product.model';
 import { UserProductService } from '../home/shared/user-product.service';
 import { AddressComponent } from '../shared/address/address.component';
 import { BaseComponent } from '../shared/base-component';
 import { BreadcrumbItem } from '../shared/breadcrumb/shared/breadcrumb-item.model';
+import Clinic from '../shared/clinic/clinic.model';
+import { ClinicService } from '../shared/clinic/clinic.service';
 import { ConfirmationMessageComponent } from '../shared/confirmation-modal/confirmation-modal.component';
+import { DocumentService } from '../shared/document/document.service';
+import Donation from '../shared/donation/donation.model';
+import { DonationService } from '../shared/donation/donation.service';
 import { DonationStatus } from '../shared/enums/dontainer-status.enum';
 import { ProductType } from '../shared/enums/product-type.enum';
+import { ProductCategoryService } from '../shared/product/product-category.service';
 import { ReturnControlComponent } from './return-control/return-control.component';
 
 @Component({
@@ -26,12 +26,12 @@ import { ReturnControlComponent } from './return-control/return-control.componen
   styleUrl: './return.component.scss',
 })
 export class ReturnComponent extends BaseComponent implements OnInit {
-  protected donations: Donation[] = [];
-  protected donationLoaded = false;
-
-  protected clinics: Clinic[] = [];
   private confirmationModal?: BsModalRef;
   private repeatReturnModal?: BsModalRef;
+
+  protected donations: Donation[] = [];
+  protected donationLoaded = false;
+  protected clinics: Clinic[] = [];
 
   constructor(
     private readonly router: Router,
@@ -52,19 +52,7 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     this.loadClinics();
   }
 
-  private loadClinics() {
-    this.clinicService.getMyClinics().subscribe((clinics) => {
-      this.clinics = clinics;
-    });
-  }
-
-  private loadDonations() {
-    this.donationService.getDonations().subscribe((donations) => {
-      this.donations = donations;
-      this.donationLoaded = true;
-    });
-  }
-
+  //#region Public Methods
   protected getCategoryDescription(category?: ProductType) {
     return this.productCategoryService.getCategoryString(category);
   }
@@ -101,6 +89,23 @@ export class ReturnComponent extends BaseComponent implements OnInit {
       .subscribe((product) => {
         this.showReturnNowModal(product, donation);
       });
+  }
+
+  //#endregion
+
+  //#region Private Methods
+
+  private loadClinics() {
+    this.clinicService.getMyClinics().subscribe((clinics) => {
+      this.clinics = clinics;
+    });
+  }
+
+  private loadDonations() {
+    this.donationService.getDonations().subscribe((donations) => {
+      this.donations = donations;
+      this.donationLoaded = true;
+    });
   }
 
   private showReturnNowModal(product: UserProduct, donation: Donation) {
@@ -159,4 +164,6 @@ export class ReturnComponent extends BaseComponent implements OnInit {
   private hideConfirmationModal() {
     this.confirmationModal?.hide();
   }
+
+  //#endregion
 }

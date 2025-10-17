@@ -20,7 +20,7 @@ import AuthenticationResponse from './shared/authentication-response.model';
 export class LoginComponent {
   private formBuilder = inject(FormBuilder);
 
-  loginForm: FormGroup = this.formBuilder.group({
+  protected loginForm: FormGroup = this.formBuilder.group({
     username: ['', [Validators.required]],
     password: ['', Validators.required],
   });

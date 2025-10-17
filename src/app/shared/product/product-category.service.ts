@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProductType } from '../../shared/enums/product-type.enum';
+import { ProductType } from '../enums/product-type.enum';
 
 @Injectable({
   providedIn: 'root',

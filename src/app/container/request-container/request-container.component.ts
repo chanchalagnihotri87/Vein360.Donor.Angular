@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, output } from '@angular/core';
+import { Component, Input, OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -6,8 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 
-import ListItem from '../../donation/shared/list-tem.model';
 import { UserInfoService } from '../../login/shared/user-info.service';
+import ListItem from '../../shared/list-item/list-tem.model';
 import { ValidationMessageComponent } from '../../shared/validation-message/validation-message.component';
 import ContainerRequest from '../shared/container-request.model';
 import ContainerType from '../shared/container-type.model';
@@ -21,20 +21,38 @@ export class RequestContainerComponent implements OnInit {
   @Input({ required: true }) containerTypes: ContainerType[] = [];
   @Input({ required: true }) clinics: ListItem[] = [];
 
-  onClose = output();
-  onSubmit = output<ContainerRequest>();
+  public onClose = output();
+  public onSubmit = output<ContainerRequest>();
 
-  public containerForm: FormGroup;
+  protected containerForm: FormGroup;
 
-  private formBuilder = inject(FormBuilder);
+  protected get ContainerType() {
+    return ContainerType;
+  }
+  protected get defaultClinicId() {
+    if (
+      this.userInfo.defaultClinicId() &&
+      this.clinics.filter((x) => x.id == this.userInfo.defaultClinicId())
+        .length > 0
+    ) {
+      return this.userInfo.defaultClinicId();
+    }
 
-  constructor(private userInfo: UserInfoService) {
+    if (this.clinics.length > 0) {
+      return this.clinics[0].id;
+    }
+
+    return undefined;
+  }
+
+  constructor(
+    private userInfo: UserInfoService,
+    private formBuilder: FormBuilder
+  ) {
     this.containerForm = this.createContainerRequestForm();
   }
 
-  closeModal() {
-    this.onClose.emit();
-  }
+  //#region Public Methods
 
   ngOnInit(): void {
     if (this.defaultClinicId) {
@@ -54,25 +72,13 @@ export class RequestContainerComponent implements OnInit {
     }
   }
 
-  get ContainerType() {
-    return ContainerType;
+  closeModal() {
+    this.onClose.emit();
   }
 
-  get defaultClinicId() {
-    if (
-      this.userInfo.defaultClinicId() &&
-      this.clinics.filter((x) => x.id == this.userInfo.defaultClinicId())
-        .length > 0
-    ) {
-      return this.userInfo.defaultClinicId();
-    }
+  //#endregion
 
-    if (this.clinics.length > 0) {
-      return this.clinics[0].id;
-    }
-
-    return undefined;
-  }
+  //#region Private Methods
 
   private createContainerRequestForm() {
     return this.formBuilder.group({
@@ -81,4 +87,5 @@ export class RequestContainerComponent implements OnInit {
       clinicId: ['', [Validators.required]],
     });
   }
+  //#endregion
 }

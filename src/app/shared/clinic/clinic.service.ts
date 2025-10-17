@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { environment } from '../../../environments/environment';
+import ListItem from '../list-item/list-tem.model';
 import Clinic from './clinic.model';
-import ListItem from './list-tem.model';
 
 @Injectable({
   providedIn: 'root',

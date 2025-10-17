@@ -7,16 +7,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import Clinic from '../../donation/shared/clinic.model';
-import DonationProduct from '../../donation/shared/donation-product.model';
-import Donation from '../../donation/shared/donation.model';
-import { DonationService } from '../../donation/shared/donation.service';
-import { LabelService } from '../../donation/shared/label.service';
-import { ProductCategoryService } from '../../donation/shared/product-category.service';
-import Product from '../../donation/shared/product.model';
 import { UserInfoService } from '../../login/shared/user-info.service';
 import { BaseComponent } from '../../shared/base-component';
+import Clinic from '../../shared/clinic/clinic.model';
+import DonationProduct from '../../shared/donation/donation-product.model';
+import { DonationService } from '../../shared/donation/donation.service';
+import { LabelService } from '../../shared/label/label.service';
+import { ProductCategoryService } from '../../shared/product/product-category.service';
+import Product from '../../shared/product/product.model';
 import { ValidationMessageComponent } from '../../shared/validation-message/validation-message.component';
+import Donation from '../shared/donation.model';
 
 @Component({
   selector: 'app-return-control',
@@ -37,6 +37,21 @@ export class ReturnControlComponent extends BaseComponent implements OnInit {
   protected returnForm: FormGroup;
   protected trackingNumbers: string[] = [];
 
+  protected get defaultClinicId() {
+    if (this.userInfo.defaultClinicId()) {
+      return this.userInfo.defaultClinicId();
+    }
+
+    if (this.clinics.length > 0) {
+      return this.clinics[0].id;
+    }
+
+    return undefined;
+  }
+  protected get trackingNumberFormControl() {
+    return this.returnForm.get('trackingNumber') as FormControl;
+  }
+
   constructor(
     private readonly router: Router,
     private readonly formBuilder: FormBuilder,
@@ -48,21 +63,79 @@ export class ReturnControlComponent extends BaseComponent implements OnInit {
     super();
     this.returnForm = this.createReturnForm();
   }
+
   ngOnInit(): void {
     if (this.donation) {
       this.loadTrackingNumbers(this.donation!.clinic!.id);
-      this.returnForm.patchValue({
-        clinicId: this.donation!.clinic!.id.toString(),
-        quantity: this.donation!.donationProduct?.units,
-      });
-    } else {
-      if (this.defaultClinicId) {
-        this.loadTrackingNumbers(this.defaultClinicId);
-        this.returnForm.patchValue({
-          clinicId: this.defaultClinicId!.toString(),
-        });
-      }
+      this.fillForm(this.donation);
+      return;
     }
+
+    if (this.defaultClinicId) {
+      this.loadTrackingNumbers(this.defaultClinicId);
+      this.fillFormWithDefaultValues();
+    }
+  }
+
+  //#region  Public Methods
+
+  protected closeModal() {
+    this.onClose.emit();
+  }
+
+  protected clinicChanged(event: Event) {
+    let clinicId = parseInt((event.currentTarget as HTMLSelectElement).value);
+    this.clearTrackingNumberSelect();
+    this.loadTrackingNumbers(clinicId);
+  }
+
+  protected toggleUseOldLabel(): void {
+    this.useOldLabel = !this.useOldLabel;
+    this.updateTrackingNumberValidations();
+  }
+
+  protected submitReturnForm() {
+    if (!this.returnForm.valid) {
+      return;
+    }
+
+    let donation = new Donation(
+      this.returnForm.value.clinicId,
+      [new DonationProduct(this.product!.id, this.returnForm.value.quantity)],
+      this.returnForm.value.trackingNumber == ''
+        ? undefined
+        : this.returnForm.value.trackingNumber
+    );
+
+    this.onSubmit.emit(donation);
+  }
+
+  protected getCategoryDescription(category?: number) {
+    return this.productCategoryService.getCategoryString(category);
+  }
+
+  //#endregion
+
+  //#region Private Methods
+  private fillForm(donation: Donation) {
+    this.returnForm.patchValue({
+      clinicId: this.donation!.clinic!.id.toString(),
+      quantity: this.donation!.donationProduct?.units,
+    });
+  }
+  private fillFormWithDefaultValues() {
+    this.returnForm.patchValue({
+      clinicId: this.defaultClinicId!.toString(),
+    });
+  }
+
+  private updateTrackingNumberValidations() {
+    if (this.useOldLabel) {
+      this.trackingNumberFormControl.setValidators([Validators.required]);
+    } else {
+      this.trackingNumberFormControl.clearValidators();
+    }
+    this.trackingNumberFormControl.updateValueAndValidity();
   }
 
   private createReturnForm() {
@@ -85,63 +158,5 @@ export class ReturnControlComponent extends BaseComponent implements OnInit {
     });
   }
 
-  protected closeModal() {
-    this.onClose.emit();
-  }
-
-  protected clinicChanged(event: Event) {
-    let clinicId = parseInt((event.currentTarget as HTMLSelectElement).value);
-    this.clearTrackingNumberSelect();
-    this.loadTrackingNumbers(clinicId);
-  }
-
-  protected toggleUseOldLabel(): void {
-    this.useOldLabel = !this.useOldLabel;
-    this.updateTrackingNumberValidations();
-  }
-
-  submitReturnForm() {
-    if (!this.returnForm.valid) {
-      return;
-    }
-
-    let donation = new Donation(
-      this.returnForm.value.clinicId,
-      [new DonationProduct(this.product!.id, this.returnForm.value.quantity)],
-      this.returnForm.value.trackingNumber == ''
-        ? undefined
-        : this.returnForm.value.trackingNumber
-    );
-
-    this.onSubmit.emit(donation);
-  }
-
-  get defaultClinicId() {
-    if (this.userInfo.defaultClinicId()) {
-      return this.userInfo.defaultClinicId();
-    }
-
-    if (this.clinics.length > 0) {
-      return this.clinics[0].id;
-    }
-
-    return undefined;
-  }
-
-  get trackingNumberFormControl() {
-    return this.returnForm.get('trackingNumber') as FormControl;
-  }
-
-  private updateTrackingNumberValidations() {
-    if (this.useOldLabel) {
-      this.trackingNumberFormControl.setValidators([Validators.required]);
-    } else {
-      this.trackingNumberFormControl.clearValidators();
-    }
-    this.trackingNumberFormControl.updateValueAndValidity();
-  }
-
-  protected getCategoryDescription(category?: number) {
-    return this.productCategoryService.getCategoryString(category);
-  }
+  //#endregion
 }

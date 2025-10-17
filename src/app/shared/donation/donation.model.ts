@@ -1,6 +1,6 @@
 import ContainerType from '../../container/shared/container-type.model';
-import { DonationStatus } from '../../shared/enums/dontainer-status.enum';
-import Clinic from './clinic.model';
+import Clinic from '../clinic/clinic.model';
+import { DonationStatus } from '../enums/dontainer-status.enum';
 import DonationProduct from './donation-product.model';
 
 export default class Donation {

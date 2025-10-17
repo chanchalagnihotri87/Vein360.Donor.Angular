@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { ClinicService } from '../donation/shared/clinic.service';
-import ListItem from '../donation/shared/list-tem.model';
+
 import { BreadcrumbService } from '../shared/breadcrumb/shared/breadcrumb.service';
+import { ClinicService } from '../shared/clinic/clinic.service';
 import { ConfirmationMessageComponent } from '../shared/confirmation-modal/confirmation-modal.component';
+import ListItem from '../shared/list-item/list-tem.model';
 import { ContainerListComponent } from './container-list/container-list.component';
 import { RequestContainerComponent } from './request-container/request-container.component';
 import ContainerRequest from './shared/container-request.model';
@@ -25,7 +26,6 @@ export class ContainerComponent implements OnInit {
   protected containersLoaded = false;
 
   private clinics: ListItem[] = [];
-
   private modelRef?: BsModalRef;
   private confirmationModalRef?: BsModalRef;
 
@@ -44,7 +44,7 @@ export class ContainerComponent implements OnInit {
     this.loadClinics();
   }
 
-  //#region  Protected Methods
+  //#region  Public Methods
 
   protected showRequestContainerModal() {
     const initialState: ModalOptions = {

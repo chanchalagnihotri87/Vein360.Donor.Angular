@@ -12,19 +12,16 @@ import DonationContainer from '../shared/donation-container.model';
 export class ContainerListComponent {
   @Input({ required: true }) containers: DonationContainer[] = [];
 
-  onDelete = output<number>();
+  public onDelete = output<number>();
 
-  //#region  Protected Methods
+  get ContainerStatus() {
+    return DonationContainerStatus;
+  }
+
+  //#region  Public Methods
 
   protected handleDeleteContainer(containerId: number) {
     this.onDelete.emit(containerId);
-  }
-
-  //#endregion
-
-  //#region Get Properties
-  get ContainerStatus() {
-    return DonationContainerStatus;
   }
 
   //#endregion

@@ -1,4 +1,4 @@
-import Product from '../../donation/shared/product.model';
+import Product from '../../shared/product/product.model';
 
 export class UserProduct extends Product {
   constructor(

@@ -3,13 +3,14 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { environment } from '../../environments/environment';
-import Clinic from '../donation/shared/clinic.model';
-import { ClinicService } from '../donation/shared/clinic.service';
-import Donation from '../donation/shared/donation.model';
-import { DonationService } from '../donation/shared/donation.service';
+
 import { ReturnControlComponent } from '../return/return-control/return-control.component';
 import { BaseComponent } from '../shared/base-component';
 import { BreadcrumbItem } from '../shared/breadcrumb/shared/breadcrumb-item.model';
+import Clinic from '../shared/clinic/clinic.model';
+import { ClinicService } from '../shared/clinic/clinic.service';
+import Donation from '../shared/donation/donation.model';
+import { DonationService } from '../shared/donation/donation.service';
 import { ProductType } from '../shared/enums/product-type.enum';
 import { UserProduct } from './shared/user-product.model';
 import { UserProductService } from './shared/user-product.service';
@@ -26,6 +27,14 @@ export class HomeComponent extends BaseComponent implements OnInit {
   protected allProducts: UserProduct[] = [];
   protected clinics: Clinic[] = [];
   protected productLoaded = false;
+
+  protected get ProductType() {
+    return ProductType;
+  }
+  protected get apiDomainUrl() {
+    return environment.apiUrl;
+  }
+
   private selectedCategories: number[] = [];
   private returnNowModal?: BsModalRef;
 
@@ -46,27 +55,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
     this.loadClinics();
   }
 
-  private loadProducts() {
-    this.userProductService.getSortProducts().subscribe((products) => {
-      this.products = products;
-      this.allProducts = products;
-      this.productLoaded = true;
-    });
-  }
-
-  private loadClinics() {
-    this.clinicServie.getMyClinics().subscribe((clinics) => {
-      this.clinics = clinics;
-    });
-  }
-
-  protected get ProductType() {
-    return ProductType;
-  }
-
-  protected get apiDomainUrl() {
-    return environment.apiUrl;
-  }
+  //#region Public Methods
 
   protected onChangeSearch() {
     this.filterProducts();
@@ -92,6 +81,16 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
     this.filterProducts();
   }
+
+  protected returnNow(productId: number) {
+    this.userProductService.getProduct(productId).subscribe((product) => {
+      this.showReturnNowModal(product);
+    });
+  }
+
+  //#endregion
+
+  //#region Private Methods
 
   private filterProducts() {
     let filteredProducts = this.allProducts;
@@ -123,12 +122,6 @@ export class HomeComponent extends BaseComponent implements OnInit {
     );
   }
 
-  protected returnNow(productId: number) {
-    this.userProductService.getProduct(productId).subscribe((product) => {
-      this.showReturnNowModal(product);
-    });
-  }
-
   private showReturnNowModal(product: UserProduct) {
     this.returnNowModal = this.modalService.show(ReturnControlComponent, {
       initialState: {
@@ -154,4 +147,20 @@ export class HomeComponent extends BaseComponent implements OnInit {
   private closeReturnNowModal() {
     this.returnNowModal?.hide();
   }
+
+  private loadProducts() {
+    this.userProductService.getSortProducts().subscribe((products) => {
+      this.products = products;
+      this.allProducts = products;
+      this.productLoaded = true;
+    });
+  }
+
+  private loadClinics() {
+    this.clinicServie.getMyClinics().subscribe((clinics) => {
+      this.clinics = clinics;
+    });
+  }
+
+  //#endregion
 }

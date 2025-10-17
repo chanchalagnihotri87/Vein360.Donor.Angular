@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import Clinic from '../../donation/shared/clinic.model';
+import Clinic from '../clinic/clinic.model';
 
 @Component({
   selector: 'app-address',
