@@ -2,6 +2,7 @@ import ContainerType from '../../container/shared/container-type.model';
 import Clinic from '../clinic/clinic.model';
 import { DonationStatus } from '../enums/dontainer-status.enum';
 import DonationProduct from './donation-product.model';
+import Pickup from './pickup';
 
 export default class Donation {
   id: number = 0;
@@ -22,6 +23,7 @@ export default class Donation {
   donationProduct?: DonationProduct; //for request with single product changes
 
   clinic?: Clinic;
+  pickup?: Pickup;
 
   public expanded: boolean = false;
 

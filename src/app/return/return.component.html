@@ -48,8 +48,18 @@
           </div>
 
           <div class="col-md-3 pt-md-2">
-            <p>Date: {{ donation.createdDate | date : "mediumDate" }}</p>
             <p>Tracking No: {{ donation.trackingNumber }}</p>
+            <p>
+              Created Date: {{ donation.createdDate | date : "mediumDate" }}
+            </p>
+            <p>
+              Pickup Time:
+              <span class="fw-medium">
+                {{
+                  donation.pickup?.pickupDateTime | date : "MMM d, y, h:mm a"
+                }}
+              </span>
+            </p>
           </div>
 
           <div class="col text-end pt-md-4">
@@ -106,8 +116,8 @@
             }
           </div>
           <div class="col-md-4">
-            <p>Pickup Code: {{ donation.pickupConfirmationCode }}</p>
-            <p>Pickup TXN Id: {{ donation.pickupTransactionId }}</p>
+            <p>Pickup Code: {{ donation.pickup?.pickupConfirmationCode }}</p>
+            <p>Pickup TXN Id: {{ donation.pickup?.pickupTransactionId }}</p>
           </div>
 
           <div class="col text-md-end">
