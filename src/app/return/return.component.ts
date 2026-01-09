@@ -199,6 +199,8 @@ export class ReturnComponent extends BaseComponent implements OnInit {
           `,
           btnClass: 'btn-success',
         },
+        backdrop: 'static',
+        keyboard: false,
       }
     );
 
