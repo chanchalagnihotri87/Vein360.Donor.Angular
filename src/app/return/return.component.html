@@ -120,7 +120,7 @@
             <p>Pickup TXN Id: {{ donation.pickup?.pickupTransactionId }}</p>
           </div>
 
-          <div class="col text-md-end">
+          <div class="col-12 text-md-end">
             <button
               type="button"
               class="btn btn-outline-secondary btn-sm me-2"
@@ -129,7 +129,22 @@
             >
               <i class="fa fa-repeat fa-lg"></i>
             </button>
+
             @if(isNotProcessed(donation)){
+
+            <!-- Show Reschedule Pickup button only if Pickup Date is expired -->
+            @if(isPickupDateExpired(donation)){
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-pickup-resechedule btn-sm position-relative me-2"
+              tooltip="Reschedule Pickup"
+              (click)="reschedulePickup(donation.id, $event)"
+            >
+              <i class="fa fa-repeat pickup-repeat-icon"></i>
+              <i class="fa fa-truck fa-2x" aria-hidden="true"></i>
+            </button>
+            }
+
             <button
               class="btn btn-outline-secondary btn-sm"
               tooltip="Delete"

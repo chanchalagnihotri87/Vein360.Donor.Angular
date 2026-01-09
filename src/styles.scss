@@ -239,6 +239,16 @@ header,
 .vein-btn-light.btn-sm {
   padding: 5px 20px;
 }
+
+.btn-success {
+  background: var(--theme-color);
+  color: var(--color-white);
+
+  &:hover {
+    background: var(--theme-color-hover);
+  }
+}
+
 /* End of Button */
 
 /*Tooltip*/
@@ -397,4 +407,26 @@ header,
   border: none;
   padding-top: 0;
   opacity: 0.5;
+}
+
+.btn-outline-secondary i.pickup-repeat-icon {
+  position: absolute;
+  left: 12px;
+  top: 6px;
+  color: #fff;
+}
+
+.btn-outline-secondary:hover i.pickup-repeat-icon {
+  color: #6c757d;
+
+  &:hover {
+    color: #6c757d;
+  }
+}
+
+.btn-pickup-resechedule {
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  padding-right: 3px;
 }

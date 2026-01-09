@@ -8,9 +8,14 @@ import { Component, Input, output } from '@angular/core';
 })
 export class ConfirmationMessageComponent {
   @Input({ required: true }) message: string = '';
+  @Input() btnClass = 'btn-danger';
 
   onYes = output<void>();
   onNo = output<void>();
+
+  get messages() {
+    return this.message.split('\n');
+  }
 
   onNoClick() {
     this.onNo.emit();

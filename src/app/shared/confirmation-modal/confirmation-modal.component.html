@@ -6,11 +6,13 @@
 </div>
 <!-- Body -->
 <div class="modal-body text-center">
-  <p class="mb-0">{{ message }}</p>
+  @for (msg of messages; track $index) {
+  <p [class]="msg ? 'mb-0' : 'mb-2'">{{ msg }}</p>
+  }
 </div>
 <!-- Footer -->
 <div class="modal-footer justify-content-center">
-  <button type="button" class="btn btn-danger" (click)="onYesClick()">
+  <button type="button" class="btn {{ btnClass }}" (click)="onYesClick()">
     Yes
   </button>
   <button type="button" class="btn btn-secondary" (click)="onNoClick()">

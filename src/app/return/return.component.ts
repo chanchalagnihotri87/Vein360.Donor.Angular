@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import ConversionHelper from '../../common/helpers/conversion-helpter';
 import { UserProduct } from '../home/shared/user-product.model';
 import { UserProductService } from '../home/shared/user-product.service';
 import { AddressComponent } from '../shared/address/address.component';
@@ -16,6 +17,7 @@ import Donation from '../shared/donation/donation.model';
 import { DonationService } from '../shared/donation/donation.service';
 import { DonationStatus } from '../shared/enums/dontainer-status.enum';
 import { ProductType } from '../shared/enums/product-type.enum';
+import { PickupService } from '../shared/pickup/pickup.service';
 import { ProductCategoryService } from '../shared/product/product-category.service';
 import { ReturnControlComponent } from './return-control/return-control.component';
 
@@ -40,7 +42,8 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     private readonly donationService: DonationService,
     private readonly documentService: DocumentService,
     private readonly userProductService: UserProductService,
-    private readonly productCategoryService: ProductCategoryService
+    private readonly productCategoryService: ProductCategoryService,
+    private readonly pickupService: PickupService
   ) {
     super();
 
@@ -71,6 +74,18 @@ export class ReturnComponent extends BaseComponent implements OnInit {
 
   protected isProcessed(donation: Donation) {
     return donation.status != DonationStatus.Returned;
+  }
+
+  protected isPickupDateExpired(donation: Donation) {
+    if (donation.pickup && donation.pickup.pickupDateTime) {
+      return (
+        ConversionHelper.convertStringToDate(
+          donation.pickup.pickupDateTime.toString()
+        ) < new Date()
+      );
+    }
+
+    return false;
   }
 
   public downloadLabel(labelFileName: string) {
@@ -105,6 +120,8 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     this.donationService.getDonations().subscribe((donations) => {
       this.donations = donations;
       this.donationLoaded = true;
+
+      console.log(donations);
     });
   }
 
@@ -163,6 +180,61 @@ export class ReturnComponent extends BaseComponent implements OnInit {
 
   private hideConfirmationModal() {
     this.confirmationModal?.hide();
+  }
+
+  //#endregion
+
+  //#region Reschedule Pickup
+  protected reschedulePickup(donationId: number, event: Event) {
+    this.hideButtonTooltip(event);
+
+    //Show confirmation message
+    this.confirmationModal = this.modalService.show(
+      ConfirmationMessageComponent,
+      {
+        initialState: {
+          message: ` After rescheduling the pickup you have to re-apply the new label. 
+          \n\n
+          Are you sure to reschedule pickup?
+          `,
+          btnClass: 'btn-success',
+        },
+      }
+    );
+
+    //If user select no exit
+    this.confirmationModal.content.onNo.subscribe(() => {
+      this.confirmationModal?.hide();
+    });
+
+    //If user select yes
+    // Make api request to reschedule pickup for donation
+    this.confirmationModal.content.onYes.subscribe(() => {
+      this.pickupService.reschedulePickup(donationId).subscribe({
+        next: (donation) => {
+          console.log('Updated Donation:');
+          console.log(donation);
+
+          const donationIndex = this.donations.findIndex(
+            (item) => item.id == donation.id
+          );
+          this.donations[donationIndex] = donation;
+
+          this.confirmationModal?.hide();
+        },
+        error: (error: any) => {
+          if (error.status === 409) {
+            alert(
+              error?.error?.message ??
+                'Sorry, an error occured on server. Please try again later.'
+            );
+            return;
+          }
+
+          throw error;
+        },
+      });
+    });
   }
 
   //#endregion
