@@ -17,7 +17,9 @@
       <h6 class="mb-3">Category</h6>
       <ul class="list-group">
         <li
-          [class]="`list-group-item ${categoryIsSelected(ProductType.ClosureFast)? 'active':''}`"
+          [class]="
+            `list-group-item ${categoryIsSelected(ProductType.ClosureFast) ? 'active' : ''}`
+          "
           role="button"
           (click)="toggleCategorySelection(ProductType.ClosureFast)"
         >
@@ -30,7 +32,9 @@
           class="list-group-item"
           role="button"
           (click)="toggleCategorySelection(ProductType.IVUS)"
-          [class]="`list-group-item ${categoryIsSelected(ProductType.IVUS)? 'active':''}`"
+          [class]="
+            `list-group-item ${categoryIsSelected(ProductType.IVUS) ? 'active' : ''}`
+          "
         >
           IVUS Catheter
           <span class="float-end"
@@ -41,38 +45,40 @@
     </div>
   </div>
   <div class="col-md-9">
-    @if(productLoaded){ @if(products.length>0){
-    <div class="row">
-      @for(product of products; track product.id){
-      <div class="col-md-4">
-        <div class="user-card product-item text-center">
-          <div class="w-100 text-center">
-            <img
-              src="{{ apiDomainUrl }}/products/image/{{ product.image }}"
-              class="img-fluid"
-              alt="{{ product.name }}"
-            />
-          </div>
-          <p>{{ product.name }}</p>
-          <div class="row">
-            <div class="col-12">
-              <button
-                class="vein-btn-success"
-                type="button"
-                (click)="returnNow(product.id)"
-              >
-                Return Now
-              </button>
+    @if (productLoaded) {
+      @if (products.length > 0) {
+        <div class="row">
+          @for (product of products; track product.id) {
+            <div class="col-md-4">
+              <div class="user-card product-item text-center">
+                <div class="w-100 text-center">
+                  <img
+                    src="{{ apiDomainUrl }}/products/image/{{ product.image }}"
+                    class="img-fluid"
+                    alt="{{ product.name }}"
+                  />
+                </div>
+                <p>{{ product.name }}</p>
+                <div class="row">
+                  <div class="col-12">
+                    <button
+                      class="vein-btn-success"
+                      type="button"
+                      (click)="returnNow(product.id)"
+                    >
+                      Return Now
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          }
         </div>
-      </div>
+      } @else {
+        <p>No product available.</p>
       }
-    </div>
-    }@else{
-    <p>No product available.</p>
-    } } @else{
-    <p>Loading..</p>
+    } @else {
+      <p>Loading..</p>
     }
   </div>
 </div>

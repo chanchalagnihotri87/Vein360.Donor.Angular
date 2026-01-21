@@ -1,6 +1,5 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import ConversionHelper from '../../common/helpers/conversion-helpter';
@@ -17,8 +16,10 @@ import Donation from '../shared/donation/donation.model';
 import { DonationService } from '../shared/donation/donation.service';
 import { DonationStatus } from '../shared/enums/dontainer-status.enum';
 import { ProductType } from '../shared/enums/product-type.enum';
+import { MessageDisplayService } from '../shared/message-display/message-display.service';
 import { PickupService } from '../shared/pickup/pickup.service';
 import { ProductCategoryService } from '../shared/product/product-category.service';
+import { TempDataService } from '../shared/temp-data/tempdata.service';
 import { ReturnControlComponent } from './return-control/return-control.component';
 
 @Component({
@@ -36,14 +37,15 @@ export class ReturnComponent extends BaseComponent implements OnInit {
   protected clinics: Clinic[] = [];
 
   constructor(
-    private readonly router: Router,
     private readonly modalService: BsModalService,
     private readonly clinicService: ClinicService,
     private readonly donationService: DonationService,
     private readonly documentService: DocumentService,
     private readonly userProductService: UserProductService,
     private readonly productCategoryService: ProductCategoryService,
-    private readonly pickupService: PickupService
+    private readonly pickupService: PickupService,
+    private readonly msgDisplayService: MessageDisplayService,
+    private readonly tempDataService: TempDataService,
   ) {
     super();
 
@@ -51,8 +53,20 @@ export class ReturnComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadDonations();
     this.loadClinics();
+
+    const returnCreated = this.tempDataService.getData('returnCreated');
+
+    if (returnCreated) {
+      this.loadDonations(() => this.showReturnCreatedSuccessMessage());
+      return;
+    }
+
+    this.loadDonations();
+  }
+
+  private showReturnCreatedSuccessMessage() {
+    this.msgDisplayService.showSuccessMessage('Return created successfully.');
   }
 
   //#region Public Methods
@@ -80,7 +94,7 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     if (donation.pickup && donation.pickup.pickupDateTime) {
       return (
         ConversionHelper.convertStringToDate(
-          donation.pickup.pickupDateTime.toString()
+          donation.pickup.pickupDateTime.toString(),
         ) < new Date()
       );
     }
@@ -116,11 +130,14 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     });
   }
 
-  private loadDonations() {
+  private loadDonations(callback?: () => void) {
     this.donationService.getDonations().subscribe((donations) => {
       this.donations = donations;
       this.donationLoaded = true;
 
+      if (callback) {
+        callback();
+      }
       console.log(donations);
     });
   }
@@ -143,7 +160,9 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     this.repeatReturnModal.content.onSubmit.subscribe((donation: Donation) => {
       this.donationService.addDonation(donation).subscribe(() => {
         this.closeReturnNowModal();
-        this.loadDonations();
+        this.loadDonations(() => {
+          this.showReturnCreatedSuccessMessage();
+        });
       });
     });
   }
@@ -162,12 +181,16 @@ export class ReturnComponent extends BaseComponent implements OnInit {
           message: 'Are you sure you want to delete this return?',
         },
         class: 'modal-md',
-      }
+      },
     );
 
     this.confirmationModal.content.onYes.subscribe(() => {
       this.donationService.deleteDonation(donation.id).subscribe(() => {
         this.donations.splice(this.donations.indexOf(donation), 1);
+
+        this.msgDisplayService.showSuccessMessage(
+          'Return deleted successfully.',
+        );
       });
 
       this.hideConfirmationModal();
@@ -201,7 +224,7 @@ export class ReturnComponent extends BaseComponent implements OnInit {
         },
         backdrop: 'static',
         keyboard: false,
-      }
+      },
     );
 
     //If user select no exit
@@ -218,17 +241,20 @@ export class ReturnComponent extends BaseComponent implements OnInit {
           console.log(donation);
 
           const donationIndex = this.donations.findIndex(
-            (item) => item.id == donation.id
+            (item) => item.id == donation.id,
           );
           this.donations[donationIndex] = donation;
 
           this.confirmationModal?.hide();
+          this.msgDisplayService.showLongSuccessMessage(
+            'Pickup rescheduled successfully.',
+          );
         },
         error: (error: any) => {
+          debugger;
           if (error.status === 409) {
-            alert(
-              error?.error?.message ??
-                'Sorry, an error occured on server. Please try again later.'
+            this.msgDisplayService.showErrorMessage(
+              'No pickup option available, please try again later.',
             );
             return;
           }
