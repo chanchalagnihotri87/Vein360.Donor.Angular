@@ -8,10 +8,9 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      // debugger;
-      // if (error.status == 0) {
-      //   msgDisplayService.showNetworkErrorMessage();
-      // }
+      if (error.status == 0) {
+        msgDisplayService.showGeneralErrorMessage();
+      }
       if (error.status == 500) {
         msgDisplayService.showGeneralErrorMessage();
       }
