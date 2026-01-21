@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    branches-ignore:
+      - staging
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
@@ -44,3 +46,4 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GENTLE_GLACIER_01A07A80F }}
           action: "close"
+
