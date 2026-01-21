@@ -115,7 +115,7 @@ export class ContainerComponent implements OnInit {
   }
 
   private loadContainerTypes() {
- 5   this.containerTypeService
+    this.containerTypeService
       .getContainerTypes()
       .subscribe((containerTypes) => {
         console.log(containerTypes);
