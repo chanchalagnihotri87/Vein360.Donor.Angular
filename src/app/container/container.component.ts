@@ -6,6 +6,7 @@ import { BreadcrumbService } from '../shared/breadcrumb/shared/breadcrumb.servic
 import { ClinicService } from '../shared/clinic/clinic.service';
 import { ConfirmationMessageComponent } from '../shared/confirmation-modal/confirmation-modal.component';
 import ListItem from '../shared/list-item/list-tem.model';
+import { MessageDisplayService } from '../shared/message-display/message-display.service';
 import { ContainerListComponent } from './container-list/container-list.component';
 import { RequestContainerComponent } from './request-container/request-container.component';
 import ContainerRequest from './shared/container-request.model';
@@ -34,7 +35,8 @@ export class ContainerComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private containerTypeService: ContatinerTypeService,
     private donationContainerService: DonationContainerService,
-    private clinicService: ClinicService
+    private clinicService: ClinicService,
+    private msgDisplayService: MessageDisplayService,
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +58,7 @@ export class ContainerComponent implements OnInit {
     };
     this.modelRef = this.modalService.show(
       RequestContainerComponent,
-      initialState
+      initialState,
     );
 
     this.modelRef.content.onClose.subscribe(() => {
@@ -67,7 +69,7 @@ export class ContainerComponent implements OnInit {
       (containerRequest: ContainerRequest) => {
         this.handleRequestForContainer(containerRequest);
         this.closeModal();
-      }
+      },
     );
   }
 
@@ -80,14 +82,18 @@ export class ContainerComponent implements OnInit {
     };
     this.confirmationModalRef = this.modalService.show(
       ConfirmationMessageComponent,
-      initialState
+      initialState,
     );
 
     this.confirmationModalRef.content.onYes.subscribe(() => {
       this.donationContainerService
         .deleteContainer(donationContainerId)
         .subscribe(() => {
-          this.loadDonationContainers();
+          this.loadDonationContainers(() =>
+            this.msgDisplayService.showSuccessMessage(
+              'Container deleted successfully.',
+            ),
+          );
         });
 
       this.hideConfirmationModal();
@@ -109,7 +115,7 @@ export class ContainerComponent implements OnInit {
   }
 
   private loadContainerTypes() {
-    this.containerTypeService
+ 5   this.containerTypeService
       .getContainerTypes()
       .subscribe((containerTypes) => {
         console.log(containerTypes);
@@ -117,14 +123,17 @@ export class ContainerComponent implements OnInit {
       });
   }
 
-  private loadDonationContainers() {
+  private loadDonationContainers(callback?: () => void) {
     this.donationContainerService.getContainers().subscribe({
       next: (containers: DonationContainer[]) => {
         this.containers = containers.sort((a, b) => b.id - a.id); //To make containers list in descending order
         this.containersLoaded = true;
+        if (callback) {
+          callback();
+        }
       },
       error: (err) => {
-        console.error('Failed to load containers:', err);
+        this.msgDisplayService.showGeneralErrorMessage();
       },
     });
   }
@@ -133,7 +142,11 @@ export class ContainerComponent implements OnInit {
     this.donationContainerService
       .requestForContainer(containerRequest)
       .subscribe(() => {
-        this.loadDonationContainers();
+        this.loadDonationContainers(() =>
+          this.msgDisplayService.showSuccessMessage(
+            'Request sent successfully.',
+          ),
+        );
       });
   }
 
