@@ -19,7 +19,7 @@ export class MessageDisplayService {
 
   showGeneralErrorMessage() {
     this.toast.error(
-      'Sorry, an error occured on server. Please try again later.',
+      'Sorry, an error occurred on the server. Please try again later.',
       '',
       {
         toastClass: 'ngx-toastr wide-error-toast',
@@ -29,7 +29,7 @@ export class MessageDisplayService {
 
   showNetworkErrorMessage() {
     this.toast.error(
-      'Sorry, we are unable to connect to server. Please check your internet connection and try again.',
+      `Sorry, we're unable to connect to the server. Please check your internet connection or try again later.`,
       '',
       {
         toastClass: 'ngx-toastr wide-error-toast',

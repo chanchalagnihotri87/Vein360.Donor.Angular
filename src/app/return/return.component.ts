@@ -250,17 +250,6 @@ export class ReturnComponent extends BaseComponent implements OnInit {
             'Pickup rescheduled successfully.',
           );
         },
-        error: (error: any) => {
-          debugger;
-          if (error.status === 409) {
-            this.msgDisplayService.showErrorMessage(
-              'No pickup option available, please try again later.',
-            );
-            return;
-          }
-
-          throw error;
-        },
       });
     });
   }
