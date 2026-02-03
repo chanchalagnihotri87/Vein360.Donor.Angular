@@ -28,28 +28,22 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private accountService: AccountService,
-    private router: Router
+    private router: Router,
   ) {}
 
   login() {
     if (this.loginForm.valid) {
       this.accountService
         .signIn(this.loginForm.value.username, this.loginForm.value.password)
-        .subscribe({
-          next: (authResponse: AuthenticationResponse) => {
-            this.authService.logIn(authResponse);
+        .subscribe((authResponse: AuthenticationResponse) => {
+          this.authService.logIn(authResponse);
 
-            if (authResponse.firstTimeLogin) {
-              this.router.navigate(['changepassword']);
-              return;
-            }
+          if (authResponse.firstTimeLogin) {
+            this.router.navigate(['changepassword']);
+            return;
+          }
 
-            this.router.navigate(['']);
-          },
-          error: (error) => {
-            console.log(error);
-            alert('You email & password are not valid.');
-          },
+          this.router.navigate(['']);
         });
     }
   }

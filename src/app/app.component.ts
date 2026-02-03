@@ -20,7 +20,10 @@ export class AppComponent {
     return this.authService.isLoggedIn();
   }
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   protected logout() {
     this.authService.logOut();

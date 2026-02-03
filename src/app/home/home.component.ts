@@ -12,6 +12,7 @@ import { ClinicService } from '../shared/clinic/clinic.service';
 import Donation from '../shared/donation/donation.model';
 import { DonationService } from '../shared/donation/donation.service';
 import { ProductType } from '../shared/enums/product-type.enum';
+import { TempDataService } from '../shared/temp-data/tempdata.service';
 import { UserProduct } from './shared/user-product.model';
 import { UserProductService } from './shared/user-product.service';
 
@@ -43,7 +44,8 @@ export class HomeComponent extends BaseComponent implements OnInit {
     private readonly clinicServie: ClinicService,
     private readonly modalService: BsModalService,
     private readonly donationService: DonationService,
-    private readonly userProductService: UserProductService
+    private readonly userProductService: UserProductService,
+    private readonly tempDataService: TempDataService,
   ) {
     super();
 
@@ -73,7 +75,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
     if (this.selectedCategories.indexOf(category) > -1) {
       this.selectedCategories.splice(
         this.selectedCategories.indexOf(category),
-        1
+        1,
       );
     } else {
       this.selectedCategories.push(category);
@@ -113,12 +115,12 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
     if (this.selectedCategories.length > 0) {
       filteredProducts = filteredProducts.filter(
-        (p) => this.selectedCategories.indexOf(p.type) > -1
+        (p) => this.selectedCategories.indexOf(p.type) > -1,
       );
     }
 
     this.products = filteredProducts.sort((a, b) =>
-      a.searchRank > b.searchRank ? -1 : 1
+      a.searchRank > b.searchRank ? -1 : 1,
     );
   }
 
@@ -139,6 +141,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
     this.returnNowModal.content.onSubmit.subscribe((donation: Donation) => {
       this.donationService.addDonation(donation).subscribe(() => {
         this.closeReturnNowModal();
+        this.tempDataService.setData('returnCreated', true);
         this.router.navigate(['return']);
       });
     });
