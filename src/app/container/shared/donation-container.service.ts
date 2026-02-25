@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import ContainerRequest from './container-request.model';
 import DonationContainer from './donation-container.model';
+import PagedDonationConatinerResponse from './paged-donation-container-respnose';
 
 @Injectable({
   providedIn: 'root',
@@ -13,13 +14,15 @@ export class DonationContainerService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getContainers(): Observable<DonationContainer[]> {
-    return this.httpClient.get<DonationContainer[]>(this.baseUrl);
+  getContainers(page: number): Observable<PagedDonationConatinerResponse> {
+    return this.httpClient.get<PagedDonationConatinerResponse>(
+      `${this.baseUrl}?page=${page}`,
+    );
   }
 
   getAvalableContainers(): Observable<DonationContainer[]> {
     return this.httpClient.get<DonationContainer[]>(
-      `${this.baseUrl}/available`
+      `${this.baseUrl}/available`,
     );
   }
 
@@ -34,7 +37,7 @@ export class DonationContainerService {
   receiveContainer(donationContainerId: number) {
     return this.httpClient.patch(
       `${this.baseUrl}/receive/${donationContainerId}`,
-      {}
+      {},
     );
   }
 }

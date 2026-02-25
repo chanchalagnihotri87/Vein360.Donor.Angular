@@ -7,28 +7,32 @@ import { ClinicService } from '../shared/clinic/clinic.service';
 import { ConfirmationMessageComponent } from '../shared/confirmation-modal/confirmation-modal.component';
 import ListItem from '../shared/list-item/list-tem.model';
 import { MessageDisplayService } from '../shared/message-display/message-display.service';
+import { PagingControlComponent } from '../shared/paging/paging-control/paging-control.component';
 import { ContainerListComponent } from './container-list/container-list.component';
 import { RequestContainerComponent } from './request-container/request-container.component';
 import ContainerRequest from './shared/container-request.model';
 import ContainerType from './shared/container-type.model';
 import { ContatinerTypeService } from './shared/contatiner-type.service';
-import DonationContainer from './shared/donation-container.model';
 import { DonationContainerService } from './shared/donation-container.service';
+import PagedDonationConatinerResponse from './shared/paged-donation-container-respnose';
 
 @Component({
   selector: 'app-container',
-  imports: [ContainerListComponent],
+  imports: [ContainerListComponent, PagingControlComponent],
   templateUrl: './container.component.html',
   styleUrl: './container.component.scss',
 })
 export class ContainerComponent implements OnInit {
-  protected containers: DonationContainer[] = [];
+  // protected containers: DonationContainer[] = [];
   protected containerTypes: ContainerType[] = [];
   protected containersLoaded = false;
+  protected pagedResponse?: PagedDonationConatinerResponse;
+  protected pageNo: number = 0;
 
   private clinics: ListItem[] = [];
   private modelRef?: BsModalRef;
   private confirmationModalRef?: BsModalRef;
+  private defaultPageNo = 1;
 
   constructor(
     private modalService: BsModalService,
@@ -42,7 +46,7 @@ export class ContainerComponent implements OnInit {
   ngOnInit(): void {
     this.setBereadcrumb();
     this.loadContainerTypes();
-    this.loadDonationContainers();
+    this.loadDonationContainers(this.defaultPageNo);
     this.loadClinics();
   }
 
@@ -89,7 +93,7 @@ export class ContainerComponent implements OnInit {
       this.donationContainerService
         .deleteContainer(donationContainerId)
         .subscribe(() => {
-          this.loadDonationContainers(() =>
+          this.loadDonationContainers(this.defaultPageNo, () =>
             this.msgDisplayService.showSuccessMessage(
               'Container deleted successfully.',
             ),
@@ -123,26 +127,39 @@ export class ContainerComponent implements OnInit {
       });
   }
 
-  private loadDonationContainers(callback?: () => void) {
-    this.donationContainerService.getContainers().subscribe({
-      next: (containers: DonationContainer[]) => {
-        this.containers = containers.sort((a, b) => b.id - a.id); //To make containers list in descending order
-        this.containersLoaded = true;
-        if (callback) {
-          callback();
-        }
-      },
-      error: (err) => {
-        this.msgDisplayService.showGeneralErrorMessage();
-      },
+  private loadDonationContainers(pageNo: number, callback?: () => void) {
+    this.donationContainerService.getContainers(pageNo).subscribe((resp) => {
+      this.pagedResponse = new PagedDonationConatinerResponse(
+        resp.items,
+        resp.totalPages,
+        resp.currentPage,
+      );
+      this.pageNo = pageNo;
+      // this.containers = resp.items.sort((a, b) => b.id - a.id); //To make containers list in descending order
+      this.containersLoaded = true;
+
+      if (callback) {
+        callback();
+      }
     });
+  }
+
+  protected goToPage(page: number) {
+    this.loadDonationContainers(page);
+  }
+  protected get containers() {
+    if (!this.pagedResponse) {
+      return [];
+    }
+
+    return this.pagedResponse.items.sort((a, b) => b.id - a.id);
   }
 
   private handleRequestForContainer(containerRequest: ContainerRequest) {
     this.donationContainerService
       .requestForContainer(containerRequest)
       .subscribe(() => {
-        this.loadDonationContainers(() =>
+        this.loadDonationContainers(this.defaultPageNo, () =>
           this.msgDisplayService.showSuccessMessage(
             'Request sent successfully.',
           ),

@@ -13,16 +13,23 @@
   </div>
   <div class="user-card-body">
     <!-- Containers List -->
-    @if(containersLoaded){ @if(containers.length>0){
-    <app-container-list
-      [containers]="containers"
-      (onDelete)="handleDeleteContainer($event)"
-    >
-    </app-container-list>
-    } @else{
-    <p>No container available.</p>
-    } }@else {
-    <p>Loading..</p>
+    @if (containersLoaded) {
+      @if (containers.length > 0) {
+        <app-container-list
+          [containers]="containers"
+          (onDelete)="handleDeleteContainer($event)"
+        >
+        </app-container-list>
+
+        <app-paging-control
+          [pagedResponse]="pagedResponse"
+          (onPageChanged)="goToPage($event)"
+        ></app-paging-control>
+      } @else {
+        <p>No container available.</p>
+      }
+    } @else {
+      <p>Loading..</p>
     }
   </div>
 </div>

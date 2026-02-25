@@ -14,9 +14,11 @@ import { ConfirmationMessageComponent } from '../shared/confirmation-modal/confi
 import { DocumentService } from '../shared/document/document.service';
 import Donation from '../shared/donation/donation.model';
 import { DonationService } from '../shared/donation/donation.service';
+import PagedDonationsResponse from '../shared/donation/paged-donation-response';
 import { DonationStatus } from '../shared/enums/dontainer-status.enum';
 import { ProductType } from '../shared/enums/product-type.enum';
 import { MessageDisplayService } from '../shared/message-display/message-display.service';
+import { PagingControlComponent } from '../shared/paging/paging-control/paging-control.component';
 import { PickupService } from '../shared/pickup/pickup.service';
 import { ProductCategoryService } from '../shared/product/product-category.service';
 import { TempDataService } from '../shared/temp-data/tempdata.service';
@@ -24,7 +26,7 @@ import { ReturnControlComponent } from './return-control/return-control.componen
 
 @Component({
   selector: 'app-return',
-  imports: [TooltipModule, DatePipe, AddressComponent],
+  imports: [TooltipModule, DatePipe, AddressComponent, PagingControlComponent],
   templateUrl: './return.component.html',
   styleUrl: './return.component.scss',
 })
@@ -32,9 +34,12 @@ export class ReturnComponent extends BaseComponent implements OnInit {
   private confirmationModal?: BsModalRef;
   private repeatReturnModal?: BsModalRef;
 
-  protected donations: Donation[] = [];
+  private pageNo = 1;
+
   protected donationLoaded = false;
   protected clinics: Clinic[] = [];
+
+  protected pagedDonations?: PagedDonationsResponse;
 
   constructor(
     private readonly modalService: BsModalService,
@@ -58,11 +63,13 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     const returnCreated = this.tempDataService.getData('returnCreated');
 
     if (returnCreated) {
-      this.loadDonations(() => this.showReturnCreatedSuccessMessage());
+      this.loadDonations(this.pageNo, () =>
+        this.showReturnCreatedSuccessMessage(),
+      );
       return;
     }
 
-    this.loadDonations();
+    this.loadDonations(this.pageNo);
   }
 
   private showReturnCreatedSuccessMessage() {
@@ -130,15 +137,23 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     });
   }
 
-  private loadDonations(callback?: () => void) {
-    this.donationService.getDonations().subscribe((donations) => {
-      this.donations = donations;
+  private loadDonations(pageNo: number, callback?: () => void) {
+    this.donationService.getDonations(pageNo).subscribe((resp) => {
+      console.log('Donations Loaded:');
+      console.log(resp.items);
+
+      this.pagedDonations = new PagedDonationsResponse(
+        resp.items,
+        resp.totalPages,
+        resp.currentPage,
+      );
+      // this.donations = resp.items;
       this.donationLoaded = true;
+      this.pageNo = pageNo;
 
       if (callback) {
         callback();
       }
-      console.log(donations);
     });
   }
 
@@ -160,7 +175,7 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     this.repeatReturnModal.content.onSubmit.subscribe((donation: Donation) => {
       this.donationService.addDonation(donation).subscribe(() => {
         this.closeReturnNowModal();
-        this.loadDonations(() => {
+        this.loadDonations(this.pageNo, () => {
           this.showReturnCreatedSuccessMessage();
         });
       });
@@ -254,5 +269,17 @@ export class ReturnComponent extends BaseComponent implements OnInit {
     });
   }
 
+  //#endregion
+
+  //#region Paging
+  goToPage(pageNo: number) {
+    this.loadDonations(pageNo);
+  }
+  //#endregion
+
+  //#region Get Fiedls
+  protected get donations() {
+    return this.pagedDonations?.items ?? [];
+  }
   //#endregion
 }

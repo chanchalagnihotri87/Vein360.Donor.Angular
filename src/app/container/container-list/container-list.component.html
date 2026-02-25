@@ -13,51 +13,56 @@
       </tr>
     </thead>
     <tbody>
-      @for(container of containers; track container.id){
-      <tr>
-        <td>
-          <span class="table-list-code"> {{ container.id }} </span>
-        </td>
-        <td>{{ container.containerType!.name }}</td>
-        <td>
-          {{ container.clinic?.clinicName }}
-        </td>
-        <td>
-          @switch (container.status) { @case (ContainerStatus.Requested) {
-          <span class="badge badge-primary">Requested</span>
-          } @case (ContainerStatus.Approved) {
-          <span class="badge badge-success">Approved</span>
-          } @case (ContainerStatus.Shipped) {
-          <span class="badge badge-info">Shipped</span>
-          } @case (ContainerStatus.Rejected) {
-          <span class="badge badge-info">Rejected</span>
-          }}
-        </td>
-        <td>
-          {{ container.requestedUnits }}
-        </td>
-        <td>
-          {{ container.approvedUnits }}
-        </td>
-        <td>
-          {{ container.createdDate | date : "mediumDate" }}
-        </td>
+      @for (container of containers; track container.id) {
+        <tr>
+          <td>
+            <span class="table-list-code"> {{ container.id }} </span>
+          </td>
+          <td>{{ container.containerType!.name }}</td>
+          <td>
+            {{ container.clinic?.clinicName }}
+          </td>
+          <td>
+            @switch (container.status) {
+              @case (ContainerStatus.Requested) {
+                <span class="badge badge-primary">Requested</span>
+              }
+              @case (ContainerStatus.Approved) {
+                <span class="badge badge-success">Approved</span>
+              }
+              @case (ContainerStatus.Shipped) {
+                <span class="badge badge-info">Shipped</span>
+              }
+              @case (ContainerStatus.Rejected) {
+                <span class="badge badge-info">Rejected</span>
+              }
+            }
+          </td>
+          <td>
+            {{ container.requestedUnits }}
+          </td>
+          <td>
+            {{ container.approvedUnits }}
+          </td>
+          <td>
+            {{ container.createdDate | date: "mediumDate" }}
+          </td>
 
-        <td>
-          @if(container.status==ContainerStatus.Requested){
-          <button
-            class="btn btn-outline-secondary btn-sm"
-            data-toggle="tooltip"
-            data-placement="top"
-            tooltip="Delete"
-            type="button"
-            (click)="handleDeleteContainer(container.id)"
-          >
-            <i class="fa fa-trash fa-lg"></i>
-          </button>
-          }
-        </td>
-      </tr>
+          <td>
+            @if (container.status == ContainerStatus.Requested) {
+              <button
+                class="btn btn-outline-secondary btn-sm"
+                data-toggle="tooltip"
+                data-placement="top"
+                tooltip="Delete"
+                type="button"
+                (click)="handleDeleteContainer(container.id)"
+              >
+                <i class="fa fa-trash fa-lg"></i>
+              </button>
+            }
+          </td>
+        </tr>
       }
     </tbody>
   </table>
