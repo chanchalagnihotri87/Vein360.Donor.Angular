@@ -3,17 +3,21 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import Donation from '../donation/donation.model';
 import DonationStatistic from './donation-statistic.model';
+import PagedDonationsResponse from './paged-donation-response';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DonationService {
-  private readonly baseUrl = `${environment.apiUrl}/donations`; // Replace with your API URL
+  private readonly baseUrl = `${environment.apiUrl}/donations`;
 
   constructor(private httpClient: HttpClient) {}
 
-  getDonations() {
-    return this.httpClient.get<Donation[]>(this.baseUrl);
+  getDonations(pageNo: number) {
+    console.log('Going to load donation with pageNo: ' + pageNo);
+    return this.httpClient.get<PagedDonationsResponse>(
+      `${this.baseUrl}?page=${pageNo}`,
+    );
   }
 
   getDonationById(donationId: number) {

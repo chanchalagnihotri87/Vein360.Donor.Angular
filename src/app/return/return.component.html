@@ -167,6 +167,70 @@
             </div>
           </div>
         }
+
+        @if (pagedDonations) {
+          <app-paging-control
+            [pagedResponse]="pagedDonations"
+            (onPageChanged)="goToPage($event)"
+          ></app-paging-control>
+        }
+
+        <!-- @if (pageDonations?.totalPages && pageDonations!.totalPages > 1) {
+          <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+              <div class="pagination-area mt-4 mb-3">
+                <div aria-label="Page navigation example">
+                  <ul class="pagination">
+                    <li class="page-item">
+                      <button
+                        class="page-link"
+                        aria-label="Previous"
+                        type="button"
+                        [disabled]="pageDonations?.previousButtonDisabled"
+                        (click)="goToPage(pageDonations!.currentPage - 1)"
+                      >
+                        <span aria-hidden="true"
+                          ><i class="fa fa-angle-double-left"></i
+                        ></span>
+                      </button>
+                    </li>
+
+                    @for (pageNo of pageDonations?.pageNumbers; track $index) {
+                      <li
+                        [class]="[
+                          'page-item',
+                          pageDonations?.currentPage == pageNo ? 'active' : '',
+                        ]"
+                      >
+                        <button
+                          class="page-link"
+                          type="button"
+                          (click)="goToPage(pageNo)"
+                        >
+                          {{ pageNo }}
+                        </button>
+                      </li>
+                    }
+
+                    <li class="page-item">
+                      <button
+                        class="page-link"
+                        aria-label="Next"
+                        type="button"
+                        [disabled]="pageDonations?.nextButtonDisabled"
+                        (click)="goToPage(pageDonations!.currentPage + 1)"
+                      >
+                        <span aria-hidden="true"
+                          ><i class="fa fa-angle-double-right"></i
+                        ></span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        } -->
       } @else {
         <p>No return available</p>
       }
